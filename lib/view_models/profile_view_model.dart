@@ -22,6 +22,14 @@ class ProfileViewModel {
     profileBloc.add(UpdateEmail(email));
   }
 
+  void updatePassword(String password){
+    profileBloc.add(UpdatePassword(password));
+  }
+
+  void updateConfirmPassword(String confirmPassword){
+    profileBloc.add(UpdateConfirmPassword(confirmPassword));
+  }
+
   void updateGender(String gender) {
     profileBloc.add(UpdateGender(gender));
   }

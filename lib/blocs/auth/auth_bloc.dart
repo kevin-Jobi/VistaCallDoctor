@@ -56,6 +56,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         emit(AuthFailure(e.toString()));
       }
     });
+
     on<GetDepartmentEvent>((event, emit) async {
       log('AuthBloc: GetDepartmentEvent - Fetching departments');
       emit(GetDepartmentLoadingState());

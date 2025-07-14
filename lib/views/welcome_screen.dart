@@ -54,7 +54,7 @@ class WelcomeScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Text(
-                    'Hey Medical Expert ',
+                    'Hey Medical Expert ', 
                     style: TextStyle(
                       fontSize: 24,
                       color: Colors.white,
@@ -70,11 +70,12 @@ class WelcomeScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 20),
                   const Text(
-                    'JOIN OUR TRUSTED \n NETWORK.REGISTER \n YOUR PROFILE,\n MANAGE \n APPOINTMENTS, AND \n CONNECT WITH CLIENTS',
+                    'JOIN OUR TRUSTED \n NETWORK.REGISTER \n YOUR PROFILE,\n MANAGE \n APPOINTMENTS, AND \n CONNECT WITH PATIENTS',
                     textAlign: TextAlign.left,
                     style: TextStyle(
                       fontSize: 26,
                       color: Colors.white,
+                      fontFamily: 'Agbalumo',
                       fontStyle: FontStyle.normal,
                       fontWeight: FontWeight.bold,
                     ),
@@ -84,8 +85,8 @@ class WelcomeScreen extends StatelessWidget {
                     onPressed: () {
                       viewModel.signInWithGoogle();
                     },
-                    icon: const Icon(Icons.g_mobiledata),
-                    label: const Text('Sign in with Google'),
+                    icon: const Icon(Icons.login),
+                    label: const Text('Login to Account',style: TextStyle(fontSize: 18),),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
                       foregroundColor: Colors.black,
@@ -106,7 +107,7 @@ class WelcomeScreen extends StatelessWidget {
                         ),
                       );
                     },
-                    child: const Text('Create Account'),
+                    child: const Text('Create Account',style: TextStyle(fontSize: 18)),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
                       foregroundColor: Colors.black,
