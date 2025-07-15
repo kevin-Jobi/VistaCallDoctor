@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vista_call_doctor/blocs/auth/auth_bloc.dart';
 import 'package:vista_call_doctor/blocs/auth/auth_state.dart';
 import 'package:vista_call_doctor/view_models/auth_view_model.dart';
+import 'package:vista_call_doctor/views/doctor_login_screen.dart';
 import 'profile_filling.dart';
 
 class WelcomeScreen extends StatelessWidget {
@@ -83,7 +84,13 @@ class WelcomeScreen extends StatelessWidget {
                   const SizedBox(height: 40),
                   ElevatedButton.icon(
                     onPressed: () {
-                      viewModel.signInWithGoogle();
+                      // viewModel.signInWithGoogle();
+                        Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>  DoctorLoginScreen(),
+                        ),
+                      );
                     },
                     icon: const Icon(Icons.login),
                     label: const Text('Login to Account',style: TextStyle(fontSize: 18),),

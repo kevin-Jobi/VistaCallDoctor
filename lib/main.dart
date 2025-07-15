@@ -57,6 +57,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:vista_call_doctor/blocs/ImagePicker/image_picker_bloc.dart';
 import 'package:vista_call_doctor/blocs/auth/auth_bloc.dart';
+import 'package:vista_call_doctor/blocs/doc_auth/doc_auth_bloc.dart';
 import 'package:vista_call_doctor/blocs/onboarding/onboarding_bloc.dart';
 import 'package:vista_call_doctor/config.dart';
 import 'package:vista_call_doctor/firebase_options.dart';
@@ -108,6 +109,7 @@ class MyApp extends StatelessWidget {
             cloudinary: CloudinaryService(),
           ),
         ),
+        BlocProvider(create: (context)=>DoctorAuthBloc(auth: FirebaseAuth.instance, firestore: FirebaseFirestore.instance,))
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

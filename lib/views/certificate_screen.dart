@@ -2,17 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:vista_call_doctor/blocs/availability/availability_bloc.dart';
-import 'package:vista_call_doctor/blocs/availability/availability_state.dart';
 import 'package:vista_call_doctor/blocs/onboarding/onboarding_bloc.dart';
 import 'package:vista_call_doctor/blocs/onboarding/onboarding_event.dart';
 import 'package:vista_call_doctor/blocs/onboarding/onboarding_state.dart';
 import 'package:vista_call_doctor/blocs/profile/profile_bloc.dart';
-import 'package:vista_call_doctor/blocs/profile/profile_state.dart';
 import 'package:vista_call_doctor/views/welcome_screen.dart';
 import '../blocs/certificate/certificate_bloc.dart';
 import '../blocs/certificate/certificate_state.dart';
 import '../view_models/certificate_view_model.dart';
-import 'appointment_screen.dart';
 
 class CertificateScreen extends StatelessWidget {
   const CertificateScreen({super.key});
@@ -206,115 +203,73 @@ class CertificateScreen extends StatelessWidget {
                     ),
                   ),
                   const Spacer(),
-                  // ElevatedButton(
-                  //   onPressed: () {
-                  //     if (state.certificatePath != null &&
-                  //         state.certificateUrl != null) {
-                  //           final onboardingBloc = context.read<OnboardingBloc>(); // new
-                  //       final profileState = context.read<ProfileBloc>().state;
-                  //       final availabilityState = context
-                  //           .read<AvailabilityBloc>()
-                  //           .state;
 
-                  //       final certificatePath = state.certificatePath!;
-                  //       context.read<OnboardingBloc>().add(
-                  //         SubmitOnboarding(
-                  //           fullName: profileState.profile.fullName,
-                  //           age: profileState.profile.age,
-                  //           dateOfBirth: profileState.profile.dateOfBirth,
-                  //           email: profileState.profile.email,
-                  //           gender: profileState.profile.gender,
-                  //           department: profileState.profile.department,
-                  //           hospitalName: profileState.profile.hospitalName,
-                  //           profileImage: profileState.profile.profileImage,
-                  //           availableDays:
-                  //               availabilityState.availability.availableDays,
-                  //           yearsOfExperience: availabilityState
-                  //               .availability
-                  //               .yearsOfExperience,
-                  //           fees: availabilityState.availability.fees,
-                  //           certificatePath: certificatePath,
-                  //           // certificateUrl:state.certificateUrl??'', // new
-                  //           password: profileState.profile.password,
-                  //         ),
-                  //       );
-
-                  //       // showPopupAndNavigate(context);
-                  //     } else {
-                  //       ScaffoldMessenger.of(context).showSnackBar(
-                  //         const SnackBar(
-                  //           content: Text('Please select a certificate image'),
-                  //         ),
-                  //       );
-                  //     }
-                  //   },
-                  //   style: ElevatedButton.styleFrom(
-                  //     backgroundColor: Colors.blue,
-                  //     foregroundColor: Colors.white,
-                  //     padding: const EdgeInsets.symmetric(
-                  //       horizontal: 50,
-                  //       vertical: 15,
-                  //     ),
-                  //   ),
-                  //   child: const Text('Sign In'),
-                  // ),
                   ElevatedButton(
-  onPressed: () async {
-    if (state.certificatePath != null) {
-      final onboardingBloc = context.read<OnboardingBloc>();
-      final profileState = context.read<ProfileBloc>().state;
-      final availabilityState = context.read<AvailabilityBloc>().state;
+                    onPressed: () async {
+                      if (state.certificatePath != null) {
+                        final onboardingBloc = context.read<OnboardingBloc>();
+                        final profileState = context.read<ProfileBloc>().state;
+                        final availabilityState = context
+                            .read<AvailabilityBloc>()
+                            .state;
 
-      onboardingBloc.add(SubmitOnboarding(
-        fullName: profileState.profile.fullName,
-        age: profileState.profile.age,
-        dateOfBirth: profileState.profile.dateOfBirth,
-        email: profileState.profile.email,
-        password: profileState.profile.password,
-        gender: profileState.profile.gender,
-        department: profileState.profile.department,
-        hospitalName: profileState.profile.hospitalName,
-        profileImage: profileState.profile.profileImage,
-        availableDays: availabilityState.availability.availableDays,
-        yearsOfExperience: availabilityState.availability.yearsOfExperience,
-        fees: availabilityState.availability.fees,
-        certificatePath: state.certificatePath!,
-      ));
+                        onboardingBloc.add(
+                          SubmitOnboarding(
+                            fullName: profileState.profile.fullName,
+                            age: profileState.profile.age,
+                            dateOfBirth: profileState.profile.dateOfBirth,
+                            email: profileState.profile.email,
+                            password: profileState.profile.password,
+                            gender: profileState.profile.gender,
+                            department: profileState.profile.department,
+                            hospitalName: profileState.profile.hospitalName,
+                            profileImage: profileState.profile.profileImage,
+                            availableDays:
+                                availabilityState.availability.availableDays,
+                            yearsOfExperience: availabilityState
+                                .availability
+                                .yearsOfExperience,
+                            fees: availabilityState.availability.fees,
+                            certificatePath: state.certificatePath!,
+                          ),
+                        );
 
-      // Listen for completion
-      await showDialog(
-        context: context,
-        builder: (_) => BlocListener<OnboardingBloc, OnboardingState>(
-          listener: (context, state) {
-            if (state is OnboardingSuccess) {
-              Navigator.pop(context);
-              _showSuccessDialog(context, profileState.profile.email);
-            }
-            if (state is OnboardingFailure) {
-              Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(state.error)),
-              );
-            }
-          },
-          child: const AlertDialog(
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                CircularProgressIndicator(),
-                SizedBox(height: 20),
-                Text('Submitting your information...'),
-              ],
-            ),
-          ),
-        ),
-      );
-    }
-  },
-  child: const Text('Complete Registration'),
-)
-
-
+                        // Listen for completion
+                        await showDialog(
+                          context: context,
+                          builder: (_) =>
+                              BlocListener<OnboardingBloc, OnboardingState>(
+                                listener: (context, state) {
+                                  if (state is OnboardingSuccess) {
+                                    Navigator.pop(context);
+                                    _showSuccessDialog(
+                                      context,
+                                      profileState.profile.email,
+                                    );
+                                  }
+                                  if (state is OnboardingFailure) {
+                                    Navigator.pop(context);
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(content: Text(state.error)),
+                                    );
+                                  }
+                                },
+                                child: const AlertDialog(
+                                  content: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      CircularProgressIndicator(),
+                                      SizedBox(height: 20),
+                                      Text('Submitting your information...'),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                        );
+                      }
+                    },
+                    child: const Text('Complete Registration'),
+                  ),
                 ],
               );
             },
