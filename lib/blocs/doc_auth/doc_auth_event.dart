@@ -19,4 +19,8 @@ class DoctorLoginRequested extends DoctorAuthEvent {
   List<Object> get props => [email, password];
 }
 
+class TogglePasswordVisibility extends DoctorAuthEvent{
+  const TogglePasswordVisibility();
+}
+
 class DoctorLogoutRequested extends DoctorAuthEvent {}

@@ -19,8 +19,15 @@ class DoctorAuthBloc extends Bloc<DoctorAuthEvent, DoctorAuthState> {
         super(DoctorAuthInitial()) {
     on<DoctorLoginRequested>(_onLoginRequested);
     on<DoctorLogoutRequested>(_onLogoutRequested);
+    on<TogglePasswordVisibility>(_onTogglePasswordVisibility);
   }
 
+  void _onTogglePasswordVisibility(
+    TogglePasswordVisibility event,
+    Emitter<DoctorAuthState> emit
+  ){
+    emit(state.copyWith(isPasswordVisible: !state.isPasswordVisible));
+  }
   Future<void> _onLoginRequested(
     DoctorLoginRequested event,
     Emitter<DoctorAuthState> emit,

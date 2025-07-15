@@ -9,11 +9,13 @@ class CustomTextField extends StatelessWidget {
   final TextInputType? keyboardType;
   final EdgeInsetsGeometry padding;
   final bool showVisibilityToggle;
+  final VoidCallback? onVisibilityToggle;
   final bool isPasswordVisible;
   final String? Function(String?)? validator;
   final ValueChanged<String>? onChanged;
   final VoidCallback? onToggleVisibility;
   final bool isPasswordField;
+  final IconButton? suffixIcon;
 
   const CustomTextField({
     super.key,
@@ -25,11 +27,13 @@ class CustomTextField extends StatelessWidget {
     this.keyboardType,
     this.padding = const EdgeInsets.symmetric(vertical: 8.0),
     this.showVisibilityToggle = false,
+    this.onVisibilityToggle,
     this.isPasswordVisible = false,
     this.onToggleVisibility,
     this.validator,
     this.onChanged,
-    this.isPasswordField = false,
+    this.isPasswordField = false, 
+    this. suffixIcon
   });
 
   @override
@@ -38,21 +42,24 @@ class CustomTextField extends StatelessWidget {
       padding: padding,
       child: TextFormField(
         controller: controller,
-        obscureText: isPasswordField ? !isPasswordVisible : obscureText,
+        // obscureText: isPasswordField ? !isPasswordVisible : obscureText,
+        obscureText: obscureText,
         keyboardType: keyboardType,
         decoration: InputDecoration(
           labelText: labelText,
           hintText: hintText,
-          prefixIcon: prefixIcon != null ? Icon(prefixIcon) : null,
-          suffixIcon: isPasswordField
-              ? IconButton(
-                  icon: Icon(
-                    isPasswordVisible ? Icons.visibility : Icons.visibility_off,
-                    color: Colors.grey,
-                  ),
-                  onPressed: onToggleVisibility,
-                )
-              : null,
+          // prefixIcon: prefixIcon != null ? Icon(prefixIcon) : null,
+          prefixIcon: Icon(prefixIcon),
+          // suffixIcon: isPasswordField
+          //     ? IconButton(
+          //         icon: Icon(
+          //           isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+          //           color: Colors.grey,
+          //         ),
+          //         onPressed: onToggleVisibility,
+          //       )
+          //     : null,
+          suffixIcon: suffixIcon,
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(30),
             borderSide: BorderSide.none,

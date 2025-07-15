@@ -4,7 +4,7 @@ import 'package:vista_call_doctor/blocs/doc_auth/doc_auth_bloc.dart';
 import 'package:vista_call_doctor/blocs/doc_auth/doc_auth_event.dart';
 import 'package:vista_call_doctor/blocs/doc_auth/doc_auth_state.dart';
 import 'package:vista_call_doctor/views/appointment_screen.dart';
-
+import 'package:vista_call_doctor/views/widgets/custom_textfield.dart';
 
 class DoctorLoginScreen extends StatelessWidget {
   final _emailController = TextEditingController();
@@ -20,7 +20,7 @@ class DoctorLoginScreen extends StatelessWidget {
         if (state is DoctorAuthSuccess) {
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (_) => AppointmentScreen()),
+            MaterialPageRoute(builder: (_) => const AppointmentScreen()),
           );
         }
         if (state is DoctorAuthFailure) {
@@ -30,6 +30,7 @@ class DoctorLoginScreen extends StatelessWidget {
         }
       },
       child: Scaffold(
+        backgroundColor: const Color.fromARGB(255, 79, 145, 175),
         body: Padding(
           padding: const EdgeInsets.all(20.0),
           child: Form(
@@ -37,17 +38,18 @@ class DoctorLoginScreen extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                Image.asset('assets/images/loginImage.png',height: 220,),
                 Text(
                   'Doctor Login',
-                  style: Theme.of(context).textTheme.headlineMedium,
+
+                  style: TextStyle(color: Colors.white,fontSize: 29,fontWeight:FontWeight.bold ),
                 ),
                 const SizedBox(height: 30),
-                TextFormField(
+                CustomTextField(
                   controller: _emailController,
-                  decoration: const InputDecoration(
-                    labelText: 'Email',
-                    border: OutlineInputBorder(),
-                  ),
+                  labelText: 'Email',
+                  prefixIcon: Icons.email,
+                  keyboardType: TextInputType.emailAddress,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter email';
@@ -56,18 +58,32 @@ class DoctorLoginScreen extends StatelessWidget {
                   },
                 ),
                 const SizedBox(height: 20),
-                TextFormField(
-                  controller: _passwordController,
-                  obscureText: true,
-                  decoration: const InputDecoration(
-                    labelText: 'Password',
-                    border: OutlineInputBorder(),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter password';
-                    }
-                    return null;
+                BlocBuilder<DoctorAuthBloc, DoctorAuthState>(
+                  builder: (context, state) {
+                    return CustomTextField(
+                      controller: _passwordController,
+                      obscureText: !state.isPasswordVisible,
+                      labelText: 'Password',
+                      prefixIcon: Icons.lock,
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          state.isPasswordVisible
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+                        ),
+                        onPressed: () {
+                          context.read<DoctorAuthBloc>().add(
+                                const TogglePasswordVisibility(),
+                              );
+                        },
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter password';
+                        }
+                        return null;
+                      },
+                    );
                   },
                 ),
                 const SizedBox(height: 30),
@@ -92,12 +108,6 @@ class DoctorLoginScreen extends StatelessWidget {
                   },
                 ),
                 const SizedBox(height: 20),
-                TextButton(
-                  onPressed: () {
-                    // Navigate to registration screen
-                  },
-                  child: const Text('Register as Doctor'),
-                ),
               ],
             ),
           ),

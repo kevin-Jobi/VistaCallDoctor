@@ -29,9 +29,9 @@ class ProfileFillingScreen extends StatelessWidget {
     });
 
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 237, 247, 255),
+      backgroundColor: const Color.fromARGB(255, 79, 145, 175),
       appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 237, 247, 255),
+        backgroundColor: const Color.fromARGB(255, 79, 145, 175),
         title: const Text('Add Profile'),
       ),
       body: Padding(

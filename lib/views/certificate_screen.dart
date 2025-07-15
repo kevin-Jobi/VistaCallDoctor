@@ -45,9 +45,9 @@ class CertificateScreen extends StatelessWidget {
     final viewModel = CertificateViewModel(certificateBloc);
 
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 237, 247, 255),
+      backgroundColor: const Color.fromARGB(255, 95, 165, 197),
       appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 237, 247, 255),
+        backgroundColor: const Color.fromARGB(255, 95, 165, 197),
         title: const Text(
           'Add Your Certificate',
           style: TextStyle(fontSize: 24, fontWeight: FontWeight.w500),
@@ -123,7 +123,12 @@ class CertificateScreen extends StatelessWidget {
                                 padding: const EdgeInsets.all(20),
                                 decoration: BoxDecoration(
                                   border: Border.all(
-                                    color: Colors.blue,
+                                    color: const Color.fromARGB(
+                                      255,
+                                      13,
+                                      130,
+                                      225,
+                                    ),
                                     width: 2,
                                   ),
                                   borderRadius: BorderRadius.circular(15),
@@ -133,13 +138,18 @@ class CertificateScreen extends StatelessWidget {
                                     Icon(
                                       Icons.camera_alt,
                                       size: 60,
-                                      color: Colors.blue,
+                                      color: Color.fromARGB(255, 13, 130, 225),
                                     ),
                                     SizedBox(height: 10),
                                     Text(
                                       'Camera',
                                       style: TextStyle(
-                                        color: Colors.blue,
+                                        color: Color.fromARGB(
+                                          255,
+                                          13,
+                                          130,
+                                          225,
+                                        ),
                                         fontSize: 16,
                                       ),
                                     ),
@@ -160,7 +170,12 @@ class CertificateScreen extends StatelessWidget {
                                 padding: const EdgeInsets.all(20),
                                 decoration: BoxDecoration(
                                   border: Border.all(
-                                    color: Colors.blue,
+                                    color: const Color.fromARGB(
+                                      255,
+                                      13,
+                                      130,
+                                      225,
+                                    ),
                                     width: 2,
                                   ),
                                   borderRadius: BorderRadius.circular(15),
@@ -170,13 +185,18 @@ class CertificateScreen extends StatelessWidget {
                                     Icon(
                                       Icons.photo_library,
                                       size: 60,
-                                      color: Colors.blue,
+                                      color: Color.fromARGB(255, 13, 130, 225),
                                     ),
                                     SizedBox(height: 10),
                                     Text(
                                       'Gallery',
                                       style: TextStyle(
-                                        color: Colors.blue,
+                                        color: Color.fromARGB(
+                                          255,
+                                          13,
+                                          130,
+                                          225,
+                                        ),
                                         fontSize: 16,
                                       ),
                                     ),
@@ -268,6 +288,14 @@ class CertificateScreen extends StatelessWidget {
                         );
                       }
                     },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 50,
+                        vertical: 15,
+                      ),
+                    ),
                     child: const Text('Complete Registration'),
                   ),
                 ],

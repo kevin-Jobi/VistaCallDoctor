@@ -78,6 +78,7 @@ flutter:
     - assets/images/AESL CFO Image 1.png
     - assets/images/AESL CFO Image.JPG
     - assets/images/Rectangle 69.png
+    - assets/images/loginImage.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

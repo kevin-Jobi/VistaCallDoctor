@@ -4,11 +4,20 @@
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-abstract class DoctorAuthState extends Equatable {
-  const DoctorAuthState();
+ class DoctorAuthState extends Equatable {
+  final bool isPasswordVisible;
 
+  const DoctorAuthState({
+    this.isPasswordVisible = false
+  });
+
+DoctorAuthState copyWith({
+  bool? isPasswordVisible
+}){
+  return DoctorAuthState(isPasswordVisible: isPasswordVisible ?? this.isPasswordVisible);
+}
   @override
-  List<Object> get props => [];
+  List<Object> get props => [isPasswordVisible];
 }
 
 class DoctorAuthInitial extends DoctorAuthState {}

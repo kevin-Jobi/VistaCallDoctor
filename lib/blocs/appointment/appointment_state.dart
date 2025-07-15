@@ -1,5 +1,3 @@
-
-
 import 'package:equatable/equatable.dart';
 import '../../models/appointment_model.dart';
 
