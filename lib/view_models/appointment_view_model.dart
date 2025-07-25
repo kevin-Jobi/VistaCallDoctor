@@ -1,3 +1,7 @@
+import 'package:flutter/material.dart';
+import 'package:vista_call_doctor/views/doctor_profile_screen.dart';
+import 'package:vista_call_doctor/views/profile/doctor_profile_screen.dart';
+
 import '../blocs/appointment/appointment_bloc.dart';
 import '../blocs/appointment/appointment_event.dart';
 
@@ -16,5 +20,14 @@ class AppointmentViewModel {
 
   void cancelAppointment(int index) {
     appointmentBloc.add(CancelAppointment(index));
+  }
+
+    void navigateToProfile(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const DoctorProfileScreen(),
+      ),
+    );
   }
 }

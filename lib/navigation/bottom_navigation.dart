@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:vista_call_doctor/views/appointment/appointment_screen.dart';
+import 'package:vista_call_doctor/views/message/message_screen.dart';
+import 'package:vista_call_doctor/views/profile/doctor_profile_screen.dart';
 import '../views/appointment_screen.dart';
 import '../views/message_screen.dart';
-import '../views/doctor_profile_settings.dart';
+import '../views/doctor_profile_screen.dart';
 
 class BottomNavigation extends StatelessWidget {
   final int currentIndex;

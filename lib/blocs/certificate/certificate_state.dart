@@ -6,6 +6,8 @@ class CertificateState {
   final bool submissionSuccess;
   final String? errorMessage;
   final String? description;
+  // new
+  final bool isLoading;
 
   CertificateState({
     required this.isSubmitting,
@@ -15,6 +17,8 @@ class CertificateState {
     this.submissionSuccess = false,
     this.errorMessage,
     this.description,
+    // new
+    this.isLoading = false
   });
 
   factory CertificateState.initial() => CertificateState(
@@ -29,6 +33,7 @@ class CertificateState {
     bool? submissionSuccess,
     String? errorMessage,
     String? description,
+    bool? isLoading
   }) {
     return CertificateState(
       isSubmitting: isSubmitting ?? this.isSubmitting,
@@ -38,6 +43,7 @@ class CertificateState {
       submissionSuccess: submissionSuccess ?? this.submissionSuccess,
       errorMessage: errorMessage ?? this.errorMessage,
       description: description ?? this.description,
+      isLoading: isLoading ?? this.isLoading
     );
   }
 }

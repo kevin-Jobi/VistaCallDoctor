@@ -11,8 +11,10 @@ class ProfileState extends Equatable {
   final String? error;
   final String? imageError; // specific error for image operations
   final bool isPasswordVisible;
+  
 
   const ProfileState({
+    
     required this.profile,
     this.isSubmitting = false,
     this.isSuccess = false,
@@ -33,9 +35,11 @@ class ProfileState extends Equatable {
     List<String>? departments,
     String? error,
     String? imageError,
-    bool? isPasswordVisible
+    bool? isPasswordVisible,
+   
   }) {
     return ProfileState(
+      
       profile: profile ?? this.profile,
       isSubmitting: isSubmitting ?? this.isSubmitting,
       isSuccess: isSuccess ?? this.isSuccess,
@@ -62,6 +66,7 @@ class ProfileState extends Equatable {
     departments,
     error,
     imageError,
-    isPasswordVisible
+    isPasswordVisible,
+    
   ];
 }

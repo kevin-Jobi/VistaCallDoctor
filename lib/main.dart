@@ -1,11 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cloudinary/cloudinary.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:vista_call_doctor/blocs/ImagePicker/image_picker_bloc.dart';
 import 'package:vista_call_doctor/blocs/auth/auth_bloc.dart';
 import 'package:vista_call_doctor/blocs/doc_auth/doc_auth_bloc.dart';
 import 'package:vista_call_doctor/blocs/onboarding/onboarding_bloc.dart';

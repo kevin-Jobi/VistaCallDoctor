@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:vista_call_doctor/views/appointment/appointment_screen.dart';
 import '../blocs/auth/auth_bloc.dart';
 import '../blocs/auth/auth_state.dart';
 import '../view_models/auth_view_model.dart';
-import '../views/welcome_screen.dart';
+import '../views/welcome/welcome_screen.dart';
 import '../views/appointment_screen.dart';
 
 class AuthWrapper extends StatelessWidget {
