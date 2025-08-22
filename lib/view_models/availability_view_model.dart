@@ -23,6 +23,10 @@ class AvailabilityViewModel {
     availabilityBloc.add(UpdateFees(fees));
   }
 
+  void updateDaySlots(String day, List<String> slots){
+      availabilityBloc.add( UpdateDaySlots(day,slots));
+  }
+
   void submitAvailability() {
     availabilityBloc.add(const SubmitAvailability());
   }

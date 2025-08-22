@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vista_call_doctor/blocs/availability/availability_bloc.dart';
+import 'package:vista_call_doctor/blocs/availability/availability_event.dart';
 import 'package:vista_call_doctor/blocs/certificate/certificate_event.dart';
 import 'package:vista_call_doctor/blocs/onboarding/onboarding_bloc.dart';
 import 'package:vista_call_doctor/blocs/onboarding/onboarding_event.dart';
@@ -49,8 +50,10 @@ class CertificateViewModel {
         yearsOfExperience: availabilityState.availability.yearsOfExperience,
         fees: availabilityState.availability.fees,
         certificatePath: state.certificatePath!,
+        availableTimeSlots: availabilityState.availability.availableTimeSlots
       ),
     );
+        BlocProvider.of<AvailabilityBloc>(context).add(const ResetAvailability());
 
     // await _showSubmissionDialog(context);
     await DialogService.showSubmissionDialog(

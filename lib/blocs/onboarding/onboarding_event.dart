@@ -21,6 +21,7 @@ class SubmitOnboarding extends OnboardingEvent {
   final List<String> availableDays;
   final String yearsOfExperience;
   final String fees;
+  final Map<String,List<String>> availableTimeSlots;
   final String certificatePath;
 
   const SubmitOnboarding({
@@ -37,6 +38,7 @@ class SubmitOnboarding extends OnboardingEvent {
     required this.yearsOfExperience,
     required this.fees,
     required this.certificatePath,
+    required this.availableTimeSlots
   });
 
   @override
@@ -53,5 +55,6 @@ class SubmitOnboarding extends OnboardingEvent {
         yearsOfExperience,
         fees,
         certificatePath,
+        availableTimeSlots
       ];
 }

@@ -163,7 +163,7 @@ class CustomTextField extends StatelessWidget {
 
   const CustomTextField({
     super.key,
-    this.controller,
+    this.controller, // should be mandatory
     this.labelText,
     this.hintText,
     this.prefixIcon,

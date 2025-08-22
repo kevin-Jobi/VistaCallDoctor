@@ -1,5 +1,3 @@
-
-
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -72,6 +70,7 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
           'availableDays': event.availableDays,
           'yearsOfExperience': event.yearsOfExperience,
           'fees': event.fees,
+          'availableTimeSlots':event.availableTimeSlots
         },
         'certificateUrl': certificateUrl,
         'verificationStatus': 'pending',

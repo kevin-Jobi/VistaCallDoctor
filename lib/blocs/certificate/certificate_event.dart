@@ -33,3 +33,5 @@ class ImageCaptured extends CertificateEvent {
   final File imageFile;
   ImageCaptured(this.imageFile);
 }
+
+class PickCertificate extends CertificateEvent {}
