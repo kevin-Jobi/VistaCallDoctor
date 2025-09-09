@@ -1,4 +1,3 @@
-// views/certificate/certificate_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vista_call_doctor/blocs/availability/availability_bloc.dart';
@@ -7,7 +6,6 @@ import 'package:vista_call_doctor/blocs/certificate/certificate_state.dart';
 import 'package:vista_call_doctor/blocs/onboarding/onboarding_bloc.dart';
 import 'package:vista_call_doctor/blocs/onboarding/onboarding_state.dart';
 import 'package:vista_call_doctor/blocs/profile/profile_bloc.dart';
-import 'package:vista_call_doctor/services/dialog_service.dart';
 import 'package:vista_call_doctor/view_models/certificate_view_model.dart';
 import 'certificate_ui.dart';
 
@@ -40,7 +38,6 @@ class CertificateScreen extends StatelessWidget {
               );
             }
             if (state.submissionSuccess) {
-              // DialogService.showSubmissionSuccessDialog(context);
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
                   content: Text('Certificate submitted for verification!'),
@@ -57,7 +54,6 @@ class CertificateScreen extends StatelessWidget {
         BlocListener<OnboardingBloc, OnboardingState>(
           listener: (context, state) {
             if (state is OnboardingSuccess) {
-              // viewModel.showSubmissionSuccessDialog(context);
               viewModel.showSuccessDialog(context );
             }
             if (state is OnboardingFailure) {

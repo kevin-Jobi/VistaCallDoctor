@@ -5,7 +5,6 @@ import 'package:vista_call_doctor/blocs/availability/availability_event.dart';
 import 'package:vista_call_doctor/blocs/certificate/certificate_event.dart';
 import 'package:vista_call_doctor/blocs/onboarding/onboarding_bloc.dart';
 import 'package:vista_call_doctor/blocs/onboarding/onboarding_event.dart';
-import 'package:vista_call_doctor/blocs/onboarding/onboarding_state.dart';
 import 'package:vista_call_doctor/blocs/profile/profile_bloc.dart';
 import 'package:vista_call_doctor/services/dialog_service.dart';
 import 'package:vista_call_doctor/views/welcome/welcome_screen.dart';

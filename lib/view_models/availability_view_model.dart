@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vista_call_doctor/blocs/availability/availability_state.dart';
 import 'package:vista_call_doctor/views/certificate/certificate_screen.dart';
-import 'package:vista_call_doctor/views/certificate_screen.dart';
 
 import '../blocs/availability/availability_bloc.dart';
 import '../blocs/availability/availability_event.dart';

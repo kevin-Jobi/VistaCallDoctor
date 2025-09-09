@@ -26,3 +26,11 @@ class CancelAppointment extends AppointmentEvent {
   @override
   List<Object> get props => [index];
 }
+
+class CompleteAppointment extends AppointmentEvent{
+  final int index;
+  const CompleteAppointment(this.index);
+
+  @override
+  List<Object> get props => [index];
+}

@@ -1,10 +1,7 @@
-// views/certificate/certificate_ui.dart
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vista_call_doctor/blocs/certificate/certificate_state.dart';
-import 'package:vista_call_doctor/blocs/onboarding/onboarding_state.dart';
 import 'package:vista_call_doctor/view_models/certificate_view_model.dart';
 
 class CertificateUI extends StatelessWidget {

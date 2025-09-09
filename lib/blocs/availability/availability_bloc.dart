@@ -18,7 +18,6 @@ class AvailabilityBloc extends Bloc<AvailabilityEvent, AvailabilityState> {
       }
       print('Toggled day: $event, New days: $currentDays');
       emit(
-        // state.copyWith(availability: Availability(availableDays: currentDays)),
         state.copyWith(
           availability: state.availability.copyWith(
             availableDays: currentDays,
@@ -31,11 +30,6 @@ class AvailabilityBloc extends Bloc<AvailabilityEvent, AvailabilityState> {
       print('Updated years: ${event.value}');
       emit(
         state.copyWith(
-          // availability: Availability(
-          //   yearsOfExperience: event.value,
-          //   availableDays: state.availability.availableDays,
-          //   fees: state.availability.fees,
-          // ),
           availability: state.availability.copyWith(
             yearsOfExperience: event.value,
             availableDays: state.availability.availableDays,
@@ -49,11 +43,6 @@ class AvailabilityBloc extends Bloc<AvailabilityEvent, AvailabilityState> {
       print('Updated fees: ${event.value}');
       emit(
         state.copyWith(
-          // availability: Availability(
-          //   fees: event.value,
-          //   availableDays: state.availability.availableDays,
-          //   yearsOfExperience: state.availability.yearsOfExperience,
-          // ),
           availability: state.availability.copyWith(
             fees: event.value,
             availableDays: state.availability.availableDays,
@@ -88,7 +77,7 @@ class AvailabilityBloc extends Bloc<AvailabilityEvent, AvailabilityState> {
       // Simulate success
       emit(state.copyWith(isSubmitting: false, isSuccess: true));
     });
-    on<ResetAvailability>((event,emit){
+    on<ResetAvailability>((event, emit) {
       print('Reseting availability');
       emit(const AvailabilityState(availability: Availability()));
     });

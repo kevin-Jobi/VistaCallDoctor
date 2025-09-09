@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:vista_call_doctor/views/doctor_profile_screen.dart';
 import 'package:vista_call_doctor/views/profile/doctor_profile_screen.dart';
 
 import '../blocs/appointment/appointment_bloc.dart';
@@ -22,12 +21,14 @@ class AppointmentViewModel {
     appointmentBloc.add(CancelAppointment(index));
   }
 
-    void navigateToProfile(BuildContext context) {
+  void completeAppointment(int index) {
+    appointmentBloc.add(CompleteAppointment(index));
+  }
+
+  void navigateToProfile(BuildContext context) {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => const DoctorProfileScreen(),
-      ),
+      MaterialPageRoute(builder: (context) => const DoctorProfileScreen()),
     );
   }
 }
