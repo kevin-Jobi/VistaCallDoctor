@@ -31,10 +31,10 @@
               "client_type": 3
             },
             {
-              "client_id": "114152481636-8ajti04ted8r0qknpslat1dn09dcvcqg.apps.googleusercontent.com",
+              "client_id": "114152481636-5u6fekvie2cebqre5e0t9cet2al2sdq7.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.example.vistaCallDoctor"
+                "bundle_id": "com.example.vistacall"
               }
             }
           ]
@@ -49,14 +49,6 @@
         }
       },
       "oauth_client": [
-        {
-          "client_id": "114152481636-1ic4m4hf0lnd818n1i6c0486r768rqvt.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.vista_call_doctor",
-            "certificate_hash": "511739c0543bf91830b96c295f4853c903c13746"
-          }
-        },
         {
           "client_id": "114152481636-fde84jlj71mrp3qdcb6ojfqhq9606n3p.apps.googleusercontent.com",
           "client_type": 1,
@@ -83,10 +75,10 @@
               "client_type": 3
             },
             {
-              "client_id": "114152481636-8ajti04ted8r0qknpslat1dn09dcvcqg.apps.googleusercontent.com",
+              "client_id": "114152481636-5u6fekvie2cebqre5e0t9cet2al2sdq7.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.example.vistaCallDoctor"
+                "bundle_id": "com.example.vistacall"
               }
             }
           ]
@@ -102,11 +94,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "114152481636-rompgn3ek0tbj85qmbnumsi3m2mpd272.apps.googleusercontent.com",
+          "client_id": "114152481636-1etrhmnds66pnlbdll8rrqo7stfs9i01.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.example.vistacall",
-            "certificate_hash": "511739c0543bf91830b96c295f4853c903c13746"
+            "certificate_hash": "73f857fab8bf204c9be1a16e65ead2cad490055e"
           }
         },
         {
@@ -127,10 +119,10 @@
               "client_type": 3
             },
             {
-              "client_id": "114152481636-8ajti04ted8r0qknpslat1dn09dcvcqg.apps.googleusercontent.com",
+              "client_id": "114152481636-5u6fekvie2cebqre5e0t9cet2al2sdq7.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.example.vistaCallDoctor"
+                "bundle_id": "com.example.vistacall"
               }
             }
           ]
@@ -163,10 +155,10 @@
               "client_type": 3
             },
             {
-              "client_id": "114152481636-8ajti04ted8r0qknpslat1dn09dcvcqg.apps.googleusercontent.com",
+              "client_id": "114152481636-5u6fekvie2cebqre5e0t9cet2al2sdq7.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.example.vistaCallDoctor"
+                "bundle_id": "com.example.vistacall"
               }
             }
           ]
