@@ -1,96 +1,11 @@
-// import 'package:flutter/material.dart';
-// import 'package:flutter_bloc/flutter_bloc.dart';
-// import 'package:vista_call_doctor/blocs/appointment/appointment_bloc.dart';
-// import 'package:vista_call_doctor/blocs/appointment/appointment_state.dart';
-// import 'package:vista_call_doctor/view_models/appointment_view_model.dart';
-// import 'package:vista_call_doctor/views/widgets/appointment_card.dart';
 
-// class AppointmentUI extends StatelessWidget {
-//   final AppointmentViewModel viewModel;
-//   final AppointmentState state;
-
-//   const AppointmentUI({
-//     super.key,
-//     required this.viewModel,
-//     required this.state,
-//   });
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return BlocBuilder<AppointmentBloc, AppointmentState>(
-//       builder: (context, state) {
-//         return DefaultTabController(
-//           length: 4,
-//           child: Column(
-//             children: [
-//               _buildTabBar(),
-//               Expanded(
-//                 child: TabBarView(
-//                   children: [
-//                     _buildAppointmentsList('Upcoming'),
-//                     _buildAppointmentsList('Pending'),
-//                     _buildAppointmentsList('Completed'),
-//                     _buildAppointmentsList('Canceled'),
-//                   ],
-//                 ),
-//               ),
-//             ],
-//           ),
-//         );
-//       },
-//     );
-//   }
-
-//   Widget _buildTabBar() {
-//     return TabBar(
-//       tabs: [
-//         Tab(text: 'Upcoming'),
-//         Tab(text: 'Pending'),
-//         Tab(text: 'Completed'),
-//         Tab(text: 'Canceled'),
-//       ],
-//     );
-//   }
-
-//   Widget _buildAppointmentsList(String status) {
-//     final filteredAppointments = state.appointments
-//         .where(
-//           (appointment) =>
-//               appointment.status.toLowerCase() == status.toLowerCase(),
-//         )
-//         .toList();
-//     print('Filtered appointments for $status: $filteredAppointments');
-
-//     if (filteredAppointments.isEmpty) {
-//       return const Center(child: Text('No appointments available'));
-//     }
-
-//     return ListView.builder(
-//       itemCount: filteredAppointments.length,
-//       itemBuilder: (context, index) {
-//         final appointment = filteredAppointments[index];
-//         return AppointmentCard(
-//           appointment: appointment,
-//           onAccept: () => viewModel.acceptAppointment(
-//             state.appointments.indexOf(appointment),
-//           ),
-//           onCancel: () => viewModel.cancelAppointment(
-//             state.appointments.indexOf(appointment),
-//           ),
-//           onComplete: () => viewModel.completeAppointment(
-//             state.appointments.indexOf(appointment),
-//           ),
-//         );
-//       },
-//     );
-//   }
-// }
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vista_call_doctor/blocs/appointment/appointment_bloc.dart';
 import 'package:vista_call_doctor/blocs/appointment/appointment_state.dart';
 import 'package:vista_call_doctor/view_models/appointment_view_model.dart';
+import 'package:vista_call_doctor/views/message/chat_detail_screen.dart';
 import 'package:vista_call_doctor/views/widgets/appointment_card.dart';
 
 class AppointmentUI extends StatelessWidget {
@@ -326,6 +241,17 @@ class AppointmentUI extends StatelessWidget {
           onComplete: () => viewModel.completeAppointment(
             state.appointments.indexOf(appointment),
           ),
+          onMessage: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ChatDetailScreen(
+                  patientId: appointment.patientName,
+                  patientName: appointment.patientName ?? 'Unknown Patient',
+                ),
+              ),
+            );
+          },
         );
       },
     );

@@ -1,109 +1,13 @@
-// import 'package:flutter/material.dart';
-// import 'package:vista_call_doctor/models/appointment_model.dart';
-
-// class AppointmentCard extends StatelessWidget {
-//   final AppointmentModel appointment;
-//   final VoidCallback onAccept;
-//   final VoidCallback onCancel;
-//   final VoidCallback onComplete;
-
-//   const AppointmentCard({
-//     super.key,
-//     required this.appointment,
-//     required this.onAccept,
-//     required this.onCancel,
-//     required this.onComplete,
-//   });
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Card(
-//       child: Padding(
-//         padding: const EdgeInsets.all(8.0),
-//         child: Row(
-//           children: [
-//             _buildPatientAvatar(),
-//             const SizedBox(width: 10),
-//             _buildPatientInfo(),
-//             _buildActionButtons(),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-
-//   Widget _buildPatientAvatar() {
-//     return const CircleAvatar(
-//       radius: 30,
-//       backgroundColor: Colors.grey,
-//       child: Icon(Icons.person, color: Colors.white),
-//     );
-//   }
-
-//   Widget _buildPatientInfo() {
-//     return Expanded(
-//       child: Column(
-//         crossAxisAlignment: CrossAxisAlignment.start,
-//         children: [
-//           Text(
-//             appointment.patientName,
-//             style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-//           ),
-//           Text('${appointment.slot} '),
-//           Text('Option: ${appointment.type}'),
-//           Text('Date: ${appointment.date}'),
-//         ],
-//       ),
-//     );
-//   }
-
-//   Widget _buildActionButtons() {
-//     return Column(
-//       children: [
-//         if (appointment.status == 'Pending') ...[
-//           ElevatedButton(
-//             onPressed: onAccept,
-//             style: ElevatedButton.styleFrom(
-//               backgroundColor: const Color.fromARGB(255, 106, 204, 109),
-//               foregroundColor: Colors.white,
-//             ),
-//             child: const Text('Accept'),
-//           ),
-//           ElevatedButton(
-//             onPressed: onCancel,
-//             style: ElevatedButton.styleFrom(
-//               backgroundColor: const Color.fromARGB(255, 232, 72, 61),
-//               foregroundColor: Colors.white,
-//             ),
-//             child: const Text('Cancel'),
-//           ),
-//         ],
-//         if (appointment.status == 'Upcoming') ...[
-//           ElevatedButton(
-//             onPressed: onComplete,
-//             style: ElevatedButton.styleFrom(
-//               backgroundColor: const Color.fromARGB(255, 0, 191, 255),
-//               foregroundColor: Colors.white,
-//             ),
-//             child: const Text('Completed'),
-//           ),
-//         ],
-//       ],
-//     );
-//   }
-// }
-
-
-
-
 import 'package:flutter/material.dart';
 import 'package:vista_call_doctor/models/appointment_model.dart';
+import 'package:vista_call_doctor/views/message/chat_detail_screen.dart';
 
 class AppointmentCard extends StatelessWidget {
   final AppointmentModel appointment;
   final VoidCallback onAccept;
   final VoidCallback onCancel;
   final VoidCallback onComplete;
+  final VoidCallback onMessage; // New callback for message
 
   const AppointmentCard({
     super.key,
@@ -111,6 +15,7 @@ class AppointmentCard extends StatelessWidget {
     required this.onAccept,
     required this.onCancel,
     required this.onComplete,
+    required this.onMessage,
   });
 
   @override
@@ -143,13 +48,9 @@ class AppointmentCard extends StatelessWidget {
             ),
             if (_shouldShowActionButtons()) ...[
               const SizedBox(height: 16),
-              const Divider(
-                color: Color(0xFFF0F0F0),
-                thickness: 1,
-                height: 1,
-              ),
+              const Divider(color: Color(0xFFF0F0F0), thickness: 1, height: 1),
               const SizedBox(height: 16),
-              _buildActionButtons(),
+              _buildActionButtons(context),
             ],
           ],
         ),
@@ -172,11 +73,7 @@ class AppointmentCard extends StatelessWidget {
           ),
         ],
       ),
-      child: const Icon(
-        Icons.person,
-        color: Colors.white,
-        size: 24,
-      ),
+      child: const Icon(Icons.person, color: Colors.white, size: 24),
     );
   }
 
@@ -220,11 +117,7 @@ class AppointmentCard extends StatelessWidget {
         const SizedBox(height: 4),
         Row(
           children: [
-            Icon(
-              Icons.access_time,
-              size: 14,
-              color: Colors.grey[600],
-            ),
+            Icon(Icons.access_time, size: 14, color: Colors.grey[600]),
             const SizedBox(width: 4),
             Text(
               appointment.slot,
@@ -239,11 +132,7 @@ class AppointmentCard extends StatelessWidget {
         const SizedBox(height: 2),
         Row(
           children: [
-            Icon(
-              Icons.video_call,
-              size: 14,
-              color: Colors.grey[600],
-            ),
+            Icon(Icons.video_call, size: 14, color: Colors.grey[600]),
             const SizedBox(width: 4),
             Text(
               appointment.type,
@@ -258,11 +147,7 @@ class AppointmentCard extends StatelessWidget {
         const SizedBox(height: 2),
         Row(
           children: [
-            Icon(
-              Icons.calendar_today,
-              size: 14,
-              color: Colors.grey[600],
-            ),
+            Icon(Icons.calendar_today, size: 14, color: Colors.grey[600]),
             const SizedBox(width: 4),
             Text(
               appointment.date,
@@ -281,16 +166,13 @@ class AppointmentCard extends StatelessWidget {
   Widget _buildStatusBadge() {
     final color = _getStatusColor();
     final bgColor = color.withOpacity(0.1);
-    
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
         color: bgColor,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: color.withOpacity(0.2),
-          width: 1,
-        ),
+        border: Border.all(color: color.withOpacity(0.2), width: 1),
       ),
       child: Text(
         appointment.status,
@@ -322,8 +204,10 @@ class AppointmentCard extends StatelessWidget {
     return appointment.status == 'Pending' || appointment.status == 'Upcoming';
   }
 
-  Widget _buildActionButtons() {
+  Widget _buildActionButtons(BuildContext context) {
     return Row(
+      mainAxisAlignment:
+          MainAxisAlignment.spaceBetween, // Distribute space evenly
       children: [
         if (appointment.status == 'Pending') ...[
           Expanded(
@@ -334,7 +218,7 @@ class AppointmentCard extends StatelessWidget {
               icon: Icons.close,
             ),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: 10), // Reduced spacing
           Expanded(
             child: _buildButton(
               label: 'Accept',
@@ -354,6 +238,16 @@ class AppointmentCard extends StatelessWidget {
             ),
           ),
         ],
+        // Always show Message button
+        const SizedBox(width: 8), // Reduced spacing
+        Expanded(
+          child: _buildButton(
+            label: 'Message',
+            onPressed: onMessage,
+            isPrimary: false,
+            icon: Icons.message,
+          ),
+        ),
       ],
     );
   }
@@ -366,33 +260,30 @@ class AppointmentCard extends StatelessWidget {
   }) {
     return Container(
       height: 44,
-      child: ElevatedButton.icon(
-        onPressed: onPressed,
-        icon: Icon(
-          icon,
-          size: 16,
-        ),
-        label: Text(
-          label,
-          style: const TextStyle(
-            fontSize: 13,
-            fontWeight: FontWeight.w600,
+      child: FittedBox(
+        // Use FittedBox to prevent text wrapping
+        fit: BoxFit.scaleDown,
+        child: ElevatedButton.icon(
+          onPressed: onPressed,
+          icon: Icon(icon, size: 16),
+          label: Text(
+            label,
+            style: const TextStyle(
+              fontSize: 12, // Reduced font size slightly
+              fontWeight: FontWeight.w600,
+            ),
           ),
-        ),
-        style: ElevatedButton.styleFrom(
-          backgroundColor: isPrimary 
-              ? const Color(0xFF667EEA)
-              : Colors.white,
-          foregroundColor: isPrimary 
-              ? Colors.white
-              : const Color(0xFF6B7280),
-          elevation: 0,
-          shadowColor: Colors.transparent,
-          side: isPrimary 
-              ? null 
-              : const BorderSide(color: Color(0xFFE5E7EB), width: 1),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: isPrimary ? const Color(0xFF667EEA) : Colors.white,
+            foregroundColor: isPrimary ? Colors.white : const Color(0xFF6B7280),
+            elevation: 0,
+            shadowColor: Colors.transparent,
+            side: isPrimary
+                ? null
+                : const BorderSide(color: Color(0xFFE5E7EB), width: 1),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
           ),
         ),
       ),

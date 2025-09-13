@@ -1,71 +1,14 @@
-// // views/message/message_ui.dart
-// import 'package:flutter/material.dart';
-// import 'package:vista_call_doctor/blocs/message/message_state.dart';
-// import 'package:vista_call_doctor/models/message_model.dart';
-
-// class MessageUI extends StatelessWidget {
-//   final MessageState state;
-
-//   const MessageUI({
-//     super.key,
-//     required this.state,
-//   });
-
-//   @override
-//   Widget build(BuildContext context) {
-//     if (state.isLoading) {
-//       return const Center(child: CircularProgressIndicator());
-//     }
-
-//     return ListView.separated(
-//       itemCount: state.messages.length,
-//       itemBuilder: (context, index) => _buildMessageItem(state.messages[index]),
-//       separatorBuilder: (context, index) => const Divider(
-//         thickness: 1,
-//         color: Colors.grey,
-//         indent: 5,
-//         endIndent: 5,
-//       ),
-//     );
-//   }
-
-//   Widget _buildMessageItem(MessageModel message) { // there was an error in argument
-//     return ListTile(
-//       leading: const CircleAvatar(
-//         radius: 25,
-//         backgroundColor: Colors.grey,
-//         child: Icon(Icons.person, color: Colors.white),
-//       ),
-//       title: Text(message.senderName),
-//       subtitle: Text('${message.messageCount} messages'),
-//       trailing: Column(
-//         mainAxisAlignment: MainAxisAlignment.center,
-//         children: [
-//           Text(message.time),
-//           const SizedBox(height: 5),
-//           const CircleAvatar(
-//             radius: 10,
-//             backgroundColor: Colors.green,
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
-
 
 
 import 'package:flutter/material.dart';
 import 'package:vista_call_doctor/blocs/message/message_state.dart';
 import 'package:vista_call_doctor/models/message_model.dart';
+import 'package:vista_call_doctor/views/message/chat_detail_screen.dart';
 
 class MessageUI extends StatelessWidget {
   final MessageState state;
 
-  const MessageUI({
-    super.key,
-    required this.state,
-  });
+  const MessageUI({super.key, required this.state});
 
   @override
   Widget build(BuildContext context) {
@@ -80,9 +23,7 @@ class MessageUI extends StatelessWidget {
     return Column(
       children: [
         _buildHeader(),
-        Expanded(
-          child: _buildMessagesList(),
-        ),
+        Expanded(child: _buildMessagesList(context)),
       ],
     );
   }
@@ -255,18 +196,18 @@ class MessageUI extends StatelessWidget {
     );
   }
 
-  Widget _buildMessagesList() {
+  Widget _buildMessagesList(BuildContext context) {
     return ListView.separated(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
       itemCount: state.messages.length,
       separatorBuilder: (context, index) => const SizedBox(height: 12),
-      itemBuilder: (context, index) => _buildMessageItem(state.messages[index]),
+      itemBuilder: (context, index) => _buildMessageItem(context, state.messages[index]),
     );
   }
 
-  Widget _buildMessageItem(MessageModel message) {
+  Widget _buildMessageItem(BuildContext context, MessageModel message) {
     final hasUnread = message.messageCount > 0;
-    
+
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -284,7 +225,15 @@ class MessageUI extends StatelessWidget {
         color: Colors.transparent,
         child: InkWell(
           onTap: () {
-            // Add navigation to chat screen here
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ChatDetailScreen(
+                  patientId: message.patientId, // Replace with actual patient ID logic
+                  patientName: message.senderName,
+                ),
+              ),
+            );
           },
           borderRadius: BorderRadius.circular(16),
           child: Padding(
@@ -293,9 +242,7 @@ class MessageUI extends StatelessWidget {
               children: [
                 _buildAvatar(message),
                 const SizedBox(width: 16),
-                Expanded(
-                  child: _buildMessageInfo(message),
-                ),
+                Expanded(child: _buildMessageInfo(message)),
                 const SizedBox(width: 12),
                 _buildTrailingInfo(message, hasUnread),
               ],
@@ -308,7 +255,7 @@ class MessageUI extends StatelessWidget {
 
   Widget _buildAvatar(MessageModel message) {
     final initials = _getInitials(message.senderName);
-    
+
     return Container(
       height: 56,
       width: 56,
@@ -336,11 +283,7 @@ class MessageUI extends StatelessWidget {
                 ),
               ),
             )
-          : const Icon(
-              Icons.person,
-              color: Colors.white,
-              size: 24,
-            ),
+          : const Icon(Icons.person, color: Colors.white, size: 24),
     );
   }
 
@@ -359,7 +302,7 @@ class MessageUI extends StatelessWidget {
 
   String _getInitials(String name) {
     if (name.isEmpty) return '';
-    
+
     final nameParts = name.trim().split(' ');
     if (nameParts.length >= 2) {
       return '${nameParts[0][0]}${nameParts[1][0]}'.toUpperCase();
@@ -384,15 +327,11 @@ class MessageUI extends StatelessWidget {
         const SizedBox(height: 4),
         Row(
           children: [
-            Icon(
-              Icons.chat_bubble_outline,
-              size: 14,
-              color: Colors.grey[600],
-            ),
+            Icon(Icons.chat_bubble_outline, size: 14, color: Colors.grey[600]),
             const SizedBox(width: 4),
             Text(
-              message.messageCount == 1 
-                  ? '1 message' 
+              message.messageCount == 1
+                  ? '1 message'
                   : '${message.messageCount} messages',
               style: TextStyle(
                 fontSize: 13,
@@ -433,18 +372,12 @@ class MessageUI extends StatelessWidget {
               height: 12,
               width: 12,
               decoration: BoxDecoration(
-                color: hasUnread 
-                    ? const Color(0xFF10B981) 
-                    : Colors.grey[300],
+                color: hasUnread ? const Color(0xFF10B981) : Colors.grey[300],
                 shape: BoxShape.circle,
               ),
             ),
             const SizedBox(width: 4),
-            Icon(
-              Icons.chevron_right,
-              color: Colors.grey[400],
-              size: 20,
-            ),
+            Icon(Icons.chevron_right, color: Colors.grey[400], size: 20),
           ],
         ),
       ],

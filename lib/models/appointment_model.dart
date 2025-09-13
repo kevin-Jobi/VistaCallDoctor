@@ -1,5 +1,6 @@
 class AppointmentModel {
   final String id;
+  final String patientId;
   final String patientName;
   final String slot;
   // final String age;
@@ -11,6 +12,7 @@ class AppointmentModel {
 
   AppointmentModel({
     required this.id,
+    required this.patientId,
     required this.patientName,
     required this.slot,
     // required this.age,
@@ -24,6 +26,7 @@ class AppointmentModel {
   factory AppointmentModel.fromFirestore(Map<String, dynamic> data, String id) {
     return AppointmentModel(
       id: id,
+      patientId: data['patientId'] ?? '',
       patientName: data['userName'] ?? 'Unknown Patient',
       slot: data['date'] ?? '',
       status: data['status'] ?? 'Pending',
@@ -35,6 +38,7 @@ class AppointmentModel {
 
   AppointmentModel copyWith({
     String? patientName,
+    String? patientId,
     String? date,
     String? slot,
     String? status,
@@ -43,6 +47,7 @@ class AppointmentModel {
   }) {
     return AppointmentModel(
       id: id,
+      patientId: patientId ?? this.patientId,
       patientName: patientName ?? this.patientName,
       slot: slot ?? this.slot,
       status: status ?? this.status,

@@ -1,141 +1,26 @@
-// import 'package:flutter/material.dart';
-// import 'package:flutter_bloc/flutter_bloc.dart';
-// import 'package:vista_call_doctor/blocs/auth/auth_bloc.dart';
-// import 'package:vista_call_doctor/view_models/profile_view_model.dart';
-
-// class ProfileScreen extends StatelessWidget {
-//   const ProfileScreen({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         leading: IconButton(
-//           icon: const Icon(Icons.arrow_back),
-//           onPressed: () => Navigator.pop(context),
-//         ),
-//         title: const Text('Profile'),
-//         backgroundColor: const Color.fromARGB(255, 210, 209, 209),
-//       ),
-//       body: FutureBuilder<Map<String, dynamic>>(
-//         future: DoctorProfileViewModel(BlocProvider.of<AuthBloc>(context)).getDoctorDetails(),
-//         builder: (context, snapshot) {
-//           if (snapshot.connectionState == ConnectionState.waiting) {
-//             return const Center(child: CircularProgressIndicator());
-//           }
-//           final data = snapshot.data ?? {};
-//           final name = data['name'] ?? 'Najin';
-//           final experience = data['experience'] ?? '12 years';
-//           final phone = data['phone'] ?? '+91 80866 38332';
-//           final email = data['email'] ?? 'najin007@gmail.com';
-//           final category = data['category'] ?? 'dermatologist';
-
-//           return SingleChildScrollView(
-//             child: Padding(
-//               padding: const EdgeInsets.all(16.0),
-//               child: Column(
-//                 crossAxisAlignment: CrossAxisAlignment.start,
-//                 children: [
-//                   Center(
-//                     child: CircleAvatar(
-//                       radius: 50,
-//                       backgroundColor: Colors.grey,
-//                       child: Icon(Icons.person, size: 50, color: Colors.white),
-//                     ),
-//                   ),
-//                   const SizedBox(height: 16),
-//                   Center(
-//                     child: TextButton(
-//                       onPressed: () {},
-//                       child: const Text(
-//                         'Edit',
-//                         style: TextStyle(color: Colors.green, fontSize: 16),
-//                       ),
-//                     ),
-//                   ),
-//                   const SizedBox(height: 24),
-//                   Row(
-//                     children: [
-//                       const Icon(Icons.person_outline, color: Colors.grey),
-//                       const SizedBox(width: 16),
-//                       Text('Name\n$name', style: const TextStyle(fontSize: 16)),
-//                     ],
-//                   ),
-//                   const SizedBox(height: 24),
-//                   Row(
-//                     children: [
-//                       const Icon(Icons.info_outline, color: Colors.grey),
-//                       const SizedBox(width: 16),
-//                       Text('Experience\n$experience', style: const TextStyle(fontSize: 16)),
-//                     ],
-//                   ),
-//                   const SizedBox(height: 24),
-//                   Row(
-//                     children: [
-//                       const Icon(Icons.phone_outlined, color: Colors.grey),
-//                       const SizedBox(width: 16),
-//                       Text('Phone\n$phone', style: const TextStyle(fontSize: 16)),
-//                     ],
-//                   ),
-//                   const SizedBox(height: 24),
-//                   Row(
-//                     children: [
-//                       const Icon(Icons.mail, color: Colors.grey),
-//                       const SizedBox(width: 16),
-//                       Text('Email\n$email', style: const TextStyle(fontSize: 16)),
-//                     ],
-//                   ),
-//                   const SizedBox(height: 24),
-//                   Row(
-//                     children: [
-//                       const Icon(Icons.phone_outlined, color: Colors.grey),
-//                       const SizedBox(width: 16),
-//                       Text('Category\n$category', style: const TextStyle(fontSize: 16)),
-//                     ],
-//                   ),
-//                   const SizedBox(height: 24),
-//                   Row(
-//                     children: [
-//                       const Icon(Icons.link_outlined, color: Colors.grey),
-//                       const SizedBox(width: 16),
-//                       const Text('Documents', style: TextStyle(fontSize: 16)),
-//                     ],
-//                   ),
-//                   const SizedBox(height: 8),
-//                   TextButton(
-//                     onPressed: () {},
-//                     child: const Text(
-//                       'Add links',
-//                       style: TextStyle(color: Colors.green, fontSize: 16),
-//                     ),
-//                   ),
-//                 ],
-//               ),
-//             ),
-//           );
-//         },
-//       ),
-//     );
-//   }
-// }
-
-
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vista_call_doctor/blocs/auth/auth_bloc.dart';
-import 'package:vista_call_doctor/view_models/profile_view_model.dart';
+import 'package:vista_call_doctor/blocs/doctor_profile/doctor_profile_bloc.dart';
+import 'package:vista_call_doctor/blocs/doctor_profile/doctor_profile_event.dart';
+import 'package:vista_call_doctor/blocs/doctor_profile/doctor_profile_state.dart';
+import 'package:vista_call_doctor/view_models/doctor_profile_view_model.dart';
+import 'package:vista_call_doctor/views/profile/edit_field_screen.dart'; // Assume this file exists
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFE),
-      appBar: _buildAppBar(context),
-      body: _buildBody(context),
+    return BlocProvider(
+      create: (context) =>
+          DoctorProfileBloc(authBloc: context.read<AuthBloc>()),
+      child: Scaffold(
+        backgroundColor: const Color(0xFFF8FAFE),
+        appBar: _buildAppBar(context),
+        body: _buildBody(context),
+      ),
     );
   }
 
@@ -204,22 +89,56 @@ class ProfileScreen extends StatelessWidget {
   }
 
   Widget _buildBody(BuildContext context) {
-    return FutureBuilder<Map<String, dynamic>>(
-      future: DoctorProfileViewModel(BlocProvider.of<AuthBloc>(context))
-          .getDoctorDetails(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
+    return BlocBuilder<DoctorProfileBloc, DoctorProfileState>(
+      builder: (context, state) {
+        if (state.isLoading) {
           return _buildLoadingState();
         }
 
-        final data = snapshot.data ?? {};
-        final name = data['name'] ?? 'Najin';
-        final experience = data['experience'] ?? '12 years';
-        final phone = data['phone'] ?? '+91 80866 38332';
-        final email = data['email'] ?? 'najin007@gmail.com';
-        final category = data['category'] ?? 'dermatologist';
+        if (state.errorMessage != null) {
+          return Center(child: Text(state.errorMessage!));
+        }
 
-        return _buildProfileContent(context, name, experience, phone, email, category);
+        return FutureBuilder<Map<String, dynamic>>(
+          future: context
+              .read<DoctorProfileBloc>()
+              .viewModel
+              .getDoctorDetails(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return _buildLoadingState();
+            }
+
+            final data = snapshot.data ?? {};
+            final personal = data['personal'] ?? {};
+            final availability = data['availability'] ?? {};
+            final name = state.fullName; // Use state for real-time updates
+            final experience = state.experience;
+            final phone = state.phone;
+            final email = state.email;
+            final category = state.specialization;
+            final profileImageUrl =
+                state.profileImageUrl ?? personal['profileImageUrl'] as String?;
+            final availableDays = List<String>.from(
+              availability['availableDays'] ?? [],
+            );
+            final availableTimeSlots = Map<String, List<String>>.from(
+              availability['availableTimeSlots'] ?? {},
+            );
+
+            return _buildProfileContent(
+              context,
+              name,
+              experience,
+              phone,
+              email,
+              category,
+              profileImageUrl,
+              availableDays,
+              availableTimeSlots,
+            );
+          },
+        );
       },
     );
   }
@@ -268,14 +187,26 @@ class ProfileScreen extends StatelessWidget {
     String phone,
     String email,
     String category,
+    String? profileImageUrl,
+    List<String> availableDays,
+    Map<String, List<String>> availableTimeSlots,
   ) {
     return SingleChildScrollView(
       padding: const EdgeInsets.fromLTRB(20, 8, 20, 20),
       child: Column(
         children: [
-          _buildProfileHeader(context, name, category),
+          _buildProfileHeader(context, name, category, profileImageUrl),
           const SizedBox(height: 32),
-          _buildProfileDetails(name, experience, phone, email, category),
+          _buildProfileDetails(
+            context,
+            name,
+            experience,
+            phone,
+            email,
+            category,
+          ),
+          const SizedBox(height: 24),
+          _buildAvailabilitySection(availableDays, availableTimeSlots),
           const SizedBox(height: 24),
           _buildDocumentsSection(context),
         ],
@@ -283,9 +214,12 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildProfileHeader(BuildContext context, String name, String category) {
-    final initials = _getInitials(name);
-
+  Widget _buildProfileHeader(
+    BuildContext context,
+    String name,
+    String category,
+    String? profileImageUrl,
+  ) {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
@@ -316,22 +250,34 @@ class ProfileScreen extends StatelessWidget {
                 width: 3,
               ),
             ),
-            child: initials.isNotEmpty
-                ? Center(
-                    child: Text(
-                      initials,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 36,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  )
-                : const Icon(
-                    Icons.person,
-                    size: 50,
-                    color: Colors.white,
-                  ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(20),
+              child: profileImageUrl != null
+                  ? Image.network(
+                      profileImageUrl,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return const Icon(
+                          Icons.person,
+                          size: 50,
+                          color: Colors.white,
+                        );
+                      },
+                      loadingBuilder: (context, child, loadingProgress) {
+                        if (loadingProgress == null) return child;
+                        return Center(
+                          child: CircularProgressIndicator(
+                            value: loadingProgress.expectedTotalBytes != null
+                                ? loadingProgress.cumulativeBytesLoaded /
+                                      loadingProgress.expectedTotalBytes!
+                                : null,
+                            color: Colors.white,
+                          ),
+                        );
+                      },
+                    )
+                  : const Icon(Icons.person, size: 50, color: Colors.white),
+            ),
           ),
           const SizedBox(height: 16),
           Text(
@@ -342,28 +288,6 @@ class ProfileScreen extends StatelessWidget {
               color: Colors.white,
             ),
           ),
-          const SizedBox(height: 8),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.2),
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(
-                color: Colors.white.withOpacity(0.3),
-                width: 1,
-              ),
-            ),
-            child: Text(
-              category.toUpperCase(),
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-                color: Colors.white.withOpacity(0.9),
-                letterSpacing: 1.2,
-              ),
-            ),
-          ),
-          const SizedBox(height: 20),
           _buildEditButton(context),
         ],
       ),
@@ -372,7 +296,7 @@ class ProfileScreen extends StatelessWidget {
 
   String _getInitials(String name) {
     if (name.isEmpty) return '';
-    
+
     final nameParts = name.trim().split(' ');
     if (nameParts.length >= 2) {
       return '${nameParts[0][0]}${nameParts[1][0]}'.toUpperCase();
@@ -386,38 +310,30 @@ class ProfileScreen extends StatelessWidget {
     return Container(
       width: double.infinity,
       height: 48,
-      child: ElevatedButton.icon(
-        onPressed: () {
-          // Add edit functionality
-        },
+      child: TextButton.icon(
+        onPressed: () => context.read<DoctorProfileBloc>().add(
+          ProfileImageUpdateRequested(),
+        ),
         icon: const Icon(Icons.edit_outlined, size: 18),
         label: const Text(
-          'Edit Profile',
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-          ),
+          'Edit',
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
         ),
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.white,
-          foregroundColor: const Color(0xFF667EEA),
-          elevation: 0,
-          shadowColor: Colors.transparent,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(14),
-          ),
-        ),
+        style: IconButton.styleFrom(foregroundColor: Colors.white),
       ),
     );
   }
 
   Widget _buildProfileDetails(
+    BuildContext context,
     String name,
     String experience,
     String phone,
     String email,
     String category,
   ) {
+    final bloc = context.read<DoctorProfileBloc>();
+
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -445,35 +361,93 @@ class ProfileScreen extends StatelessWidget {
             ),
           ),
           _buildDetailItem(
+            context,
             icon: Icons.person_outline,
             label: 'Full Name',
             value: name,
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => EditFieldScreen(
+                  title: 'Full Name',
+                  initialValue: name,
+                  onSave: (newValue) =>
+                      bloc.add(ProfileNameUpdateRequested(newValue)),
+                ),
+              ),
+            ),
             showDivider: true,
           ),
           _buildDetailItem(
+            context,
             icon: Icons.work_outline,
             label: 'Experience',
             value: experience,
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => EditFieldScreen(
+                  title: 'Experience',
+                  initialValue: experience,
+                  onSave: (newValue) =>
+                      bloc.add(ProfileExperienceUpdateRequested(newValue)),
+                ),
+              ),
+            ),
             showDivider: true,
           ),
           _buildDetailItem(
+            context,
             icon: Icons.phone_outlined,
             label: 'Phone Number',
             value: phone,
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => EditFieldScreen(
+                  title: 'Phone Number',
+                  initialValue: phone,
+                  onSave: (newValue) =>
+                      bloc.add(ProfilePhoneUpdateRequested(newValue)),
+                ),
+              ),
+            ),
             showDivider: true,
-            isClickable: true,
           ),
           _buildDetailItem(
+            context,
             icon: Icons.email_outlined,
             label: 'Email Address',
             value: email,
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => EditFieldScreen(
+                  title: 'Email Address',
+                  initialValue: email,
+                  onSave: (newValue) =>
+                      bloc.add(ProfileEmailUpdateRequested(newValue)),
+                ),
+              ),
+            ),
             showDivider: true,
-            isClickable: true,
           ),
           _buildDetailItem(
+            context,
             icon: Icons.medical_services_outlined,
             label: 'Specialization',
             value: category,
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => EditFieldScreen(
+                  title: 'Specialization',
+                  initialValue: category,
+                  onSave: (newValue) =>
+                      bloc.add(ProfileSpecializationUpdateRequested(newValue)),
+                ),
+              ),
+            ),
             showDivider: false,
           ),
         ],
@@ -481,81 +455,81 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildDetailItem({
+  Widget _buildDetailItem(
+    BuildContext context, {
     required IconData icon,
     required String label,
     required String value,
     required bool showDivider,
-    bool isClickable = false,
+    VoidCallback? onTap,
   }) {
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-          child: Row(
-            children: [
-              Container(
-                height: 44,
-                width: 44,
-                decoration: BoxDecoration(
-                  color: const Color(0xFFF5F7FA),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Icon(
-                  icon,
-                  color: const Color(0xFF667EEA),
-                  size: 22,
-                ),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      label,
-                      style: TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.grey[600],
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      value,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        color: Color(0xFF1A1A1A),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              if (isClickable)
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+            child: Row(
+              children: [
                 Container(
-                  height: 32,
-                  width: 32,
+                  height: 44,
+                  width: 44,
                   decoration: BoxDecoration(
-                    color: const Color(0xFF667EEA).withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(8),
+                    color: const Color(0xFFF5F7FA),
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                  child: const Icon(
-                    Icons.content_copy,
-                    color: Color(0xFF667EEA),
-                    size: 16,
+                  child: Icon(icon, color: const Color(0xFF667EEA), size: 22),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        label,
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.grey[600],
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        value,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: Color(0xFF1A1A1A),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-            ],
+                if (onTap != null)
+                  Container(
+                    height: 32,
+                    width: 32,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF667EEA).withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: const Icon(
+                      Icons.edit,
+                      color: Color(0xFF667EEA),
+                      size: 16,
+                    ),
+                  ),
+              ],
+            ),
           ),
-        ),
-        if (showDivider)
-          Container(
-            margin: const EdgeInsets.symmetric(horizontal: 20),
-            height: 1,
-            color: const Color(0xFFF0F0F0),
-          ),
-      ],
+          if (showDivider)
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 20),
+              height: 1,
+              color: const Color(0xFFF0F0F0),
+            ),
+        ],
+      ),
     );
   }
 
@@ -630,17 +604,11 @@ class ProfileScreen extends StatelessWidget {
                 icon: const Icon(Icons.add, size: 18),
                 label: const Text(
                   'Add Documents',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
                 ),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: const Color(0xFF667EEA),
-                  side: const BorderSide(
-                    color: Color(0xFF667EEA),
-                    width: 1.5,
-                  ),
+                  side: const BorderSide(color: Color(0xFF667EEA), width: 1.5),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -651,5 +619,126 @@ class ProfileScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Widget _buildAvailabilitySection(
+    List<String> availableDays,
+    Map<String, List<String>> availableTimeSlots,
+  ) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 15,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Padding(
+            padding: EdgeInsets.fromLTRB(20, 20, 20, 16),
+            child: Text(
+              'Availability',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+                color: Color(0xFF1A1A1A),
+              ),
+            ),
+          ),
+          ...availableDays.map((day) {
+            final timeSlots = availableTimeSlots[day] ?? [];
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    height: 44,
+                    width: 44,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFF5F7FA),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: const Icon(
+                      Icons.calendar_today,
+                      color: Color(0xFF667EEA),
+                      size: 22,
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          _getFullDayName(day),
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: Color(0xFF1A1A1A),
+                          ),
+                        ),
+                        if (timeSlots.isNotEmpty)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 4),
+                            child: Wrap(
+                              spacing: 8,
+                              runSpacing: 4,
+                              children: timeSlots
+                                  .map((slot) => _buildTimeSlotChip(slot))
+                                  .toList(),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }).toList(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTimeSlotChip(String timeSlot) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      decoration: BoxDecoration(
+        color: const Color(0xFF667EEA).withOpacity(0.1),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: const Color(0xFF667EEA).withOpacity(0.3),
+          width: 1,
+        ),
+      ),
+      child: Text(
+        timeSlot,
+        style: const TextStyle(
+          color: Color(0xFF667EEA),
+          fontSize: 12,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+    );
+  }
+
+  String _getFullDayName(String shortDay) {
+    const Map<String, String> dayNames = {
+      'Mon': 'Monday',
+      'Tue': 'Tuesday',
+      'Wed': 'Wednesday',
+      'Thu': 'Thursday',
+      'Fri': 'Friday',
+      'Sat': 'Saturday',
+      'Sun': 'Sunday',
+    };
+    return dayNames[shortDay] ?? shortDay;
   }
 }

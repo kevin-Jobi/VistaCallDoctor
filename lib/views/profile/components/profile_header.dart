@@ -1,70 +1,40 @@
-// // views/profile/components/profile_header.dart
-// import 'package:flutter/material.dart';
-// import 'package:vista_call_doctor/view_models/profile_view_model.dart';
-
-// class ProfileHeader extends StatelessWidget {
-//   final VoidCallback onTap;
-//   final DoctorProfileViewModel viewModel;
-
-//   const ProfileHeader({super.key, required this.onTap, required this.viewModel});
-
-//   @override
-//   Widget build(BuildContext context) {
-// return FutureBuilder<Map<String, dynamic>>(
-//       future: viewModel.getDoctorDetails(),
-//       builder: (context, snapshot) {
-//         if (snapshot.connectionState == ConnectionState.waiting) {
-//           return const Center(child: CircularProgressIndicator());
-//         }
-//         final doctorName = snapshot.data?['name'] ?? 'Unknown';
-//         final specialization = snapshot.data?['specialization'] ?? 'N/A';
-//         return Container(
-//           margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
-//           decoration: BoxDecoration(
-//             color: const Color.fromARGB(255, 196, 223, 241),
-//             borderRadius: BorderRadius.circular(16),
-//           ),
-//           child: ListTile(
-//             leading: const CircleAvatar(
-//               radius: 25,
-//               backgroundColor: Colors.grey,
-//               child: Icon(Icons.person, color: Colors.white),
-//             ),
-//             title: Text('Dr. $doctorName'),
-//             subtitle: Text(specialization),
-//             onTap: onTap,
-//           ),
-//         );
-//       },
-//     );
-//   }
-// }
-
 import 'package:flutter/material.dart';
-import 'package:vista_call_doctor/view_models/profile_view_model.dart';
+import 'package:vista_call_doctor/view_models/doctor_profile_view_model.dart';
 
 class ProfileHeader extends StatelessWidget {
+  final String name;
+  final String category;
+  final String? profileImageUrl;
+  final String email;
   final VoidCallback onTap;
   final DoctorProfileViewModel viewModel;
 
-  const ProfileHeader({super.key, required this.onTap, required this.viewModel});
+  const ProfileHeader({
+    super.key,
+    this.name = 'Unknown', // Default value
+    this.category = 'N/A', // Default value
+    this.profileImageUrl, // Optional
+    required this.email,
+    required this.onTap,
+    required this.viewModel,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<Map<String, dynamic>>(
-      future: viewModel.getDoctorDetails(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return _buildLoadingState();
-        }
+    // return FutureBuilder<Map<String, dynamic>>(
+    //   future: viewModel.getDoctorDetails(),
+    //   builder: (context, snapshot) {
+    //     if (snapshot.connectionState == ConnectionState.waiting) {
+    //       return _buildLoadingState();
+    //     }
 
-        final doctorName = snapshot.data?['name'] ?? 'Unknown';
-        final specialization = snapshot.data?['specialization'] ?? 'N/A';
-        final email = snapshot.data?['email'] ?? '';
+    //     final doctorName = snapshot.data?['name'] ?? 'Unknown';
+    //     final specialization = snapshot.data?['specialization'] ?? 'N/A';
+    //     final email = snapshot.data?['email'] ?? '';
 
-        return _buildProfileCard(context, doctorName, specialization, email);
-      },
-    );
+    return _buildProfileCard(context, name, category, email);
+    //   },
+    // );
   }
 
   Widget _buildLoadingState() {
@@ -118,7 +88,7 @@ class ProfileHeader extends StatelessWidget {
         ),
         child: Row(
           children: [
-            _buildProfileAvatar(doctorName),
+            _buildProfileAvatar(doctorName, profileImageUrl),
             const SizedBox(width: 16),
             Expanded(
               child: _buildProfileInfo(doctorName, specialization, email),
@@ -130,42 +100,69 @@ class ProfileHeader extends StatelessWidget {
     );
   }
 
-  Widget _buildProfileAvatar(String doctorName) {
+  Widget _buildProfileAvatar(String doctorName, String? profileImageUrl) {
     final initials = _getInitials(doctorName);
-    
+
     return Container(
       height: 70,
       width: 70,
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(0.2),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: Colors.white.withOpacity(0.3),
-          width: 2,
-        ),
+        border: Border.all(color: Colors.white.withOpacity(0.3), width: 2),
       ),
-      child: initials.isNotEmpty
-          ? Center(
-              child: Text(
-                initials,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            )
-          : const Icon(
-              Icons.person,
-              color: Colors.white,
-              size: 32,
-            ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(18),
+        child: profileImageUrl != null
+            ? Image.network(
+                profileImageUrl,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return initials.isNotEmpty
+                      ? Center(
+                          child: Text(
+                            initials,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 24,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        )
+                      : const Icon(Icons.person, color: Colors.white, size: 32);
+                },
+                loadingBuilder: (context, child, loadingProgress) {
+                  if (loadingProgress == null) return child;
+                  return Center(
+                    child: CircularProgressIndicator(
+                      value: loadingProgress.expectedTotalBytes != null
+                          ? loadingProgress.cumulativeBytesLoaded /
+                                loadingProgress.expectedTotalBytes!
+                          : null,
+                      color: Colors.white,
+                    ),
+                  );
+                }, // },
+              )
+            : (initials.isNotEmpty
+                  ? Center(
+                      child: Text(
+                        initials,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 24,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    )
+                  : const Icon(Icons.person, color: Colors.white, size: 32)),
+      ),
     );
   }
 
   String _getInitials(String name) {
     if (name == 'Unknown' || name.isEmpty) return '';
-    
+
     final nameParts = name.trim().split(' ');
     if (nameParts.length >= 2) {
       return '${nameParts[0][0]}${nameParts[1][0]}'.toUpperCase();
@@ -175,7 +172,11 @@ class ProfileHeader extends StatelessWidget {
     return '';
   }
 
-  Widget _buildProfileInfo(String doctorName, String specialization, String email) {
+  Widget _buildProfileInfo(
+    String doctorName,
+    String specialization,
+    String email,
+  ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -238,10 +239,7 @@ class ProfileHeader extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(0.2),
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(
-          color: Colors.white.withOpacity(0.3),
-          width: 1,
-        ),
+        border: Border.all(color: Colors.white.withOpacity(0.3), width: 1),
       ),
       child: Icon(
         Icons.edit_outlined,
