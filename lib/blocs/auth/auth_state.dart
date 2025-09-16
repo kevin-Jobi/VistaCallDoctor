@@ -8,6 +8,11 @@ abstract class AuthState extends Equatable {
   List<Object?> get props => [];
 }
 
+class Unauthenticated extends AuthState {
+  @override
+  List<Object?> get props => [];
+}
+
 class AuthInitial extends AuthState {}
 
 class Authenticated extends AuthState {
@@ -19,11 +24,13 @@ class Authenticated extends AuthState {
   List<Object?> get props => [user];
 }
 
-class Unauthenticated extends AuthState {}
 
 class AuthLoggedOut extends AuthState {}
 
-class AuthLoading extends AuthState {}
+class AuthLoading extends AuthState {
+  @override
+  List<Object?> get props => [];
+}
 
 class AuthFailure extends AuthState {
   final String error;

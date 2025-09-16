@@ -48,9 +48,8 @@
 //   }
 // }
 
-
-
 import 'package:flutter/material.dart';
+import 'package:share_plus/share_plus.dart';
 import 'profile_option_item.dart';
 
 class ProfileOptionsList extends StatelessWidget {
@@ -91,7 +90,7 @@ class ProfileOptionsList extends StatelessWidget {
                 title: 'Invite Friends',
                 subtitle: 'Share the app with colleagues',
                 showBorder: true,
-                onTap: () => _showComingSoonSnackbar(context, 'Invite Friends'),
+                onTap: () => _shareAppInvitation(context),
               ),
               ProfileOptionItem(
                 icon: Icons.feedback_outlined,
@@ -112,7 +111,8 @@ class ProfileOptionsList extends StatelessWidget {
                 title: 'Terms & Conditions',
                 subtitle: 'View terms of service',
                 showBorder: false,
-                onTap: () => _showComingSoonSnackbar(context, 'Terms & Conditions'),
+                onTap: () =>
+                    _showComingSoonSnackbar(context, 'Terms & Conditions'),
               ),
             ],
           ),
@@ -153,16 +153,44 @@ class ProfileOptionsList extends StatelessWidget {
     );
   }
 
+  void _shareAppInvitation(BuildContext context) async {
+    const String appLink =
+        'https://your-app-link.com'; // Replace with your app's download link
+    const String invitationMessage =
+        'Hey! Check out this amazing app! Download it here: $appLink';
+    try {
+      final result = await SharePlus.instance.share(
+        ShareParams(
+          text: invitationMessage
+        )
+      );
+      if (result.status == ShareResultStatus.success) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Invitation shared successfully!'),
+            backgroundColor: Color(0xFF667EEA),
+            duration: Duration(seconds: 2),
+          ),
+        );
+      }
+    } catch (e) {
+      print('Sharing error: $e'); // Add logging to diagnose the issue
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Failed to share invitation. Please try again.'),
+          backgroundColor: Color(0xFFEF4444),
+          duration: Duration(seconds: 2),
+        ),
+      );
+    }
+  }
+
   void _showComingSoonSnackbar(BuildContext context, String feature) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Row(
           children: [
-            const Icon(
-              Icons.info_outline,
-              color: Colors.white,
-              size: 20,
-            ),
+            const Icon(Icons.info_outline, color: Colors.white, size: 20),
             const SizedBox(width: 12),
             Expanded(
               child: Text(
@@ -177,9 +205,7 @@ class ProfileOptionsList extends StatelessWidget {
         ),
         backgroundColor: const Color(0xFF667EEA),
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         margin: const EdgeInsets.all(16),
         duration: const Duration(seconds: 2),
       ),
