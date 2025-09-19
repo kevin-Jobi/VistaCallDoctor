@@ -223,7 +223,7 @@ class DoctorProfileScreen extends StatelessWidget {
 
         final data = snapshot.data ?? {};
         final personal = data['personal'] ?? {};
-        final availability = data['availability'] ?? {};
+        // final availability = data['availability'] ?? {};
         final name = personal['fullName'] ?? 'Unknown';
         final email = personal['email'] ?? '';
         final category = personal['department'] ?? 'N/A';
@@ -246,7 +246,8 @@ class DoctorProfileScreen extends StatelessWidget {
               _buildQuickStats(),
               const SizedBox(height: 24),
               ProfileOptionsList(
-                onLogout: () => _handleLogout(context, viewModel)),
+                onLogout: () => _handleLogout(context, viewModel),
+              ),
             ],
           ),
         );
@@ -254,7 +255,7 @@ class DoctorProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildLoadingState(){
+  Widget _buildLoadingState() {
     return Center(
       child: Container(
         padding: const EdgeInsets.all(20),
@@ -284,7 +285,7 @@ class DoctorProfileScreen extends StatelessWidget {
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
               ),
-            )
+            ),
           ],
         ),
       ),

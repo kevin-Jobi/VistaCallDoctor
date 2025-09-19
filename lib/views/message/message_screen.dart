@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vista_call_doctor/blocs/message/message_bloc.dart';
+import 'package:vista_call_doctor/blocs/message/message_event.dart';
 import 'package:vista_call_doctor/blocs/message/message_state.dart';
 import 'package:vista_call_doctor/navigation/bottom_navigation.dart';
 import 'package:vista_call_doctor/view_models/message_view_model.dart';
@@ -14,16 +15,34 @@ class MessageScreen extends StatelessWidget {
   const MessageScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final messageBloc = BlocProvider.of<MessageBloc>(context);
-    final viewModel = MessageViewModel(messageBloc);
-    viewModel.loadMessages();
+  // Widget build(BuildContext context) {
+  //   final messageBloc = BlocProvider.of<MessageBloc>(context);
+  //   final viewModel = MessageViewModel(messageBloc);
+  //   viewModel.loadMessages();
 
-    return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFE),
-      appBar: _buildAppBar(context),
-      body: _buildBody(viewModel),
-      bottomNavigationBar: const BottomNavigation(currentIndex: 1),
+  //   return Scaffold(
+  //     backgroundColor: const Color(0xFFF8FAFE),
+  //     appBar: _buildAppBar(context),
+  //     body: _buildBody(viewModel),
+  //     bottomNavigationBar: const BottomNavigation(currentIndex: 1),
+  //   );
+  // }
+
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => MessageBloc()..add(const LoadMessages()),
+      child: Builder(
+        builder: (context) {
+          final messageBloc = BlocProvider.of<MessageBloc>(context);
+          final viewModel = MessageViewModel(messageBloc);
+          return Scaffold(
+            backgroundColor: const Color(0xFFF8FAFE),
+            appBar: _buildAppBar(context),
+            body: _buildBody(viewModel),
+            bottomNavigationBar: const BottomNavigation(currentIndex: 1),
+          );
+        },
+      ),
     );
   }
 

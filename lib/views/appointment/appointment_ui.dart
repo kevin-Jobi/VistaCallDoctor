@@ -178,7 +178,7 @@ class AppointmentUI extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
       ),
       child: TabBar(
-        // ❌ keep it false so all 4 tabs take equal width
+        //  keep it false so all 4 tabs take equal width
         isScrollable: false,
         labelColor: Colors.white,
         unselectedLabelColor: const Color(0xFF6B7280),
@@ -196,7 +196,7 @@ class AppointmentUI extends StatelessWidget {
         indicatorPadding: const EdgeInsets.all(4),
         dividerColor: Colors.transparent,
 
-        // ✅ This fixes truncation:
+        //  This fixes truncation:
         tabAlignment: TabAlignment.fill,
         labelPadding: EdgeInsets.zero,
 
