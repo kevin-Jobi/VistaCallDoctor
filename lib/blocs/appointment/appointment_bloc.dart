@@ -11,8 +11,8 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
 
   AppointmentBloc() : super(const AppointmentState()) {
     on<LoadAppointments>(_onLoadAppointments);
-    on<AcceptAppointment>(_onAcceptAppointment);
-    on<CancelAppointment>(_onCancelAppointment);
+    // on<AcceptAppointment>(_onAcceptAppointment);
+    // on<CancelAppointment>(_onCancelAppointment);
     on<CompleteAppointment>(_onCompleteAppointment);
   }
 
@@ -39,7 +39,15 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
         'Raw appointments data: ${bookings.docs.map((doc) => doc.data()).toList()}',
       );
       final appointments = bookings.docs.map((doc) {
-        return AppointmentModel.fromFirestore(doc.data(), doc.id);
+        final data = doc.data();
+        String normalizedStatus = data['status']?.toLowerCase();
+        if (normalizedStatus != 'completed') {
+          normalizedStatus = 'upcoming'; // Default to Upcoming for new or invalid statuses
+        }
+        // return AppointmentModel.fromFirestore(doc.data(), doc.id);
+        return AppointmentModel.fromFirestore({
+          ...data,'status':normalizedStatus ,
+        },doc.id);
       }).toList();
 
       print('Fetched appointments: $appointments');
@@ -55,52 +63,52 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
     }
   }
 
-  void _onAcceptAppointment(
-    AcceptAppointment event,
-    Emitter<AppointmentState> emit,
-  ) async {
-    emit(state.copyWith(isLoading: true));
-    final updatedAppointments = List<AppointmentModel>.from(state.appointments);
-    final appointmentToUpdate = updatedAppointments[event.index];
-    final updatedAppointment = appointmentToUpdate.copyWith(status: 'Upcoming');
+  // void _onAcceptAppointment(
+  //   AcceptAppointment event,
+  //   Emitter<AppointmentState> emit,
+  // ) async {
+  //   emit(state.copyWith(isLoading: true));
+  //   final updatedAppointments = List<AppointmentModel>.from(state.appointments);
+  //   final appointmentToUpdate = updatedAppointments[event.index];
+  //   final updatedAppointment = appointmentToUpdate.copyWith(status: 'Upcoming');
 
-    // Update Firestore
-    final user = _auth.currentUser;
-    if (user != null) {
-      final doctorId = user.uid;
-      await _db
-          .collection('doctors')
-          .doc(doctorId)
-          .collection('bookings')
-          .doc(appointmentToUpdate.id)
-          .update({'status': 'Upcoming'});
-    }
-    updatedAppointments[event.index] = updatedAppointment;
-    emit(state.copyWith(appointments: updatedAppointments, isLoading: false));
-  }
+  //   // Update Firestore
+  //   final user = _auth.currentUser;
+  //   if (user != null) {
+  //     final doctorId = user.uid;
+  //     await _db
+  //         .collection('doctors')
+  //         .doc(doctorId)
+  //         .collection('bookings')
+  //         .doc(appointmentToUpdate.id)
+  //         .update({'status': 'Upcoming'});
+  //   }
+  //   updatedAppointments[event.index] = updatedAppointment;
+  //   emit(state.copyWith(appointments: updatedAppointments, isLoading: false));
+  // }
 
-  void _onCancelAppointment(
-    CancelAppointment event,
-    Emitter<AppointmentState> emit,
-  ) async {
-    emit(state.copyWith(isLoading: true));
-    final updatedAppointments = List<AppointmentModel>.from(state.appointments);
-    final appointmentToUpdate = updatedAppointments[event.index];
-    final updatedAppointment = appointmentToUpdate.copyWith(status: 'Canceled');
+  // void _onCancelAppointment(
+  //   CancelAppointment event,
+  //   Emitter<AppointmentState> emit,
+  // ) async {
+  //   emit(state.copyWith(isLoading: true));
+  //   final updatedAppointments = List<AppointmentModel>.from(state.appointments);
+  //   final appointmentToUpdate = updatedAppointments[event.index];
+  //   final updatedAppointment = appointmentToUpdate.copyWith(status: 'Canceled');
 
-    final user = _auth.currentUser;
-    if (user != null) {
-      final doctorId = user.uid;
-      await _db
-          .collection('doctors')
-          .doc(doctorId)
-          .collection('bookings')
-          .doc(appointmentToUpdate.id)
-          .update({'status': 'Canceled'});
-    }
-    updatedAppointments[event.index] = updatedAppointment;
-    emit(state.copyWith(appointments: updatedAppointments, isLoading: false));
-  }
+  //   final user = _auth.currentUser;
+  //   if (user != null) {
+  //     final doctorId = user.uid;
+  //     await _db
+  //         .collection('doctors')
+  //         .doc(doctorId)
+  //         .collection('bookings')
+  //         .doc(appointmentToUpdate.id)
+  //         .update({'status': 'Canceled'});
+  //   }
+  //   updatedAppointments[event.index] = updatedAppointment;
+  //   emit(state.copyWith(appointments: updatedAppointments, isLoading: false));
+  // }
 
   Future<void> _onCompleteAppointment(
     CompleteAppointment event,

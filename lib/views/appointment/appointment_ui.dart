@@ -23,7 +23,7 @@ class AppointmentUI extends StatelessWidget {
     return BlocBuilder<AppointmentBloc, AppointmentState>(
       builder: (context, state) {
         return DefaultTabController(
-          length: 4,
+          length: 2,
           child: Column(
             children: [
               _buildHeader(),
@@ -34,9 +34,7 @@ class AppointmentUI extends StatelessWidget {
                 child: TabBarView(
                   children: [
                     _buildAppointmentsList('Upcoming'),
-                    _buildAppointmentsList('Pending'),
                     _buildAppointmentsList('Completed'),
-                    _buildAppointmentsList('Canceled'),
                   ],
                 ),
               ),
@@ -49,9 +47,6 @@ class AppointmentUI extends StatelessWidget {
 
   Widget _buildHeader() {
     final totalAppointments = state.appointments.length;
-    final pendingCount = state.appointments
-        .where((apt) => apt.status.toLowerCase() == 'pending')
-        .length;
 
     return Container(
       padding: const EdgeInsets.all(20),
@@ -96,89 +91,20 @@ class AppointmentUI extends StatelessWidget {
               ],
             ),
           ),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.2),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: Colors.white.withOpacity(0.3),
-                width: 1,
-              ),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  height: 8,
-                  width: 8,
-                  decoration: const BoxDecoration(
-                    color: Color(0xFFFFB800),
-                    shape: BoxShape.circle,
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  '$pendingCount Pending',
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ],
-            ),
-          ),
         ],
       ),
     );
   }
 
-  // Widget _buildTabBar() {
-  //   return Container(
-  //     margin: const EdgeInsets.symmetric(horizontal: 4),
-  //     decoration: BoxDecoration(
-  //       color: const Color(0xFFF5F7FA),
-  //       borderRadius: BorderRadius.circular(16),
-  //     ),
-  //     child: TabBar(
-  //       labelColor: Colors.white,
-  //       unselectedLabelColor: const Color(0xFF6B7280),
-  //       labelStyle: const TextStyle(
-  //         fontSize: 13,
-  //         fontWeight: FontWeight.w600,
-  //       ),
-  //       unselectedLabelStyle: const TextStyle(
-  //         fontSize: 13,
-  //         fontWeight: FontWeight.w500,
-  //       ),
-  //       indicator: BoxDecoration(
-  //         gradient: const LinearGradient(
-  //           colors: [Color(0xFF667EEA), Color(0xFF764BA2)],
-  //         ),
-  //         borderRadius: BorderRadius.circular(12),
-  //       ),
-  //       indicatorPadding: const EdgeInsets.all(4),
-  //       dividerColor: Colors.transparent,
-  //       tabs: const [
-  //         Tab(text: 'Upcoming'),
-  //         Tab(text: 'Pending'),
-  //         Tab(text: 'Completed'),
-  //         Tab(text: 'Canceled'),
-  //       ],
-  //     ),
-  //   );
-  // }
-
   Widget _buildTabBar() {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 4),
+      padding: const EdgeInsets.symmetric(vertical: 4), // Added vertical padding for better spacing
       decoration: BoxDecoration(
         color: const Color(0xFFF5F7FA),
         borderRadius: BorderRadius.circular(16),
       ),
       child: TabBar(
-        //  keep it false so all 4 tabs take equal width
         isScrollable: false,
         labelColor: Colors.white,
         unselectedLabelColor: const Color(0xFF6B7280),
@@ -193,18 +119,13 @@ class AppointmentUI extends StatelessWidget {
           ),
           borderRadius: BorderRadius.circular(12),
         ),
-        indicatorPadding: const EdgeInsets.all(4),
+        indicatorPadding: const EdgeInsets.all(6), // Increased padding for indicator
         dividerColor: Colors.transparent,
-
-        //  This fixes truncation:
         tabAlignment: TabAlignment.fill,
-        labelPadding: EdgeInsets.zero,
-
+        labelPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4), // Added horizontal padding
         tabs: const [
           Tab(text: 'Upcoming'),
-          Tab(text: 'Pending'),
           Tab(text: 'Completed'),
-          Tab(text: 'Canceled'),
         ],
       ),
     );
@@ -232,12 +153,8 @@ class AppointmentUI extends StatelessWidget {
         final appointment = filteredAppointments[index];
         return AppointmentCard(
           appointment: appointment,
-          onAccept: () => viewModel.acceptAppointment(
-            state.appointments.indexOf(appointment),
-          ),
-          onCancel: () => viewModel.cancelAppointment(
-            state.appointments.indexOf(appointment),
-          ),
+          onAccept: null,
+          onCancel: null,
           onComplete: () => viewModel.completeAppointment(
             state.appointments.indexOf(appointment),
           ),
@@ -309,23 +226,11 @@ class AppointmentUI extends StatelessWidget {
           'color': const Color(0xFF10B981),
           'message': 'Your upcoming appointments\nwill appear here',
         };
-      case 'pending':
-        return {
-          'icon': Icons.schedule,
-          'color': const Color(0xFFFFB800),
-          'message': 'New appointment requests\nwill appear here',
-        };
       case 'completed':
         return {
           'icon': Icons.check_circle,
           'color': const Color(0xFF10B981),
           'message': 'Your completed appointments\nwill appear here',
-        };
-      case 'canceled':
-        return {
-          'icon': Icons.cancel,
-          'color': const Color(0xFFEF4444),
-          'message': 'Canceled appointments\nwill appear here',
         };
       default:
         return {

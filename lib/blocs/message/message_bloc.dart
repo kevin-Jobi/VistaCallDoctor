@@ -402,7 +402,9 @@ class MessageBloc extends Bloc<MessageEvent, MessageState> {
             .get();
         if (lastMessageDoc.docs.isNotEmpty) {
           final data = lastMessageDoc.docs.first.data() as Map<String, dynamic>;
-          String patientName = 'Unknown';
+          // String patientName = 'Unknown';
+          String patientName = actualPatientId;
+          print('Initial patientName set to:$patientName');
           // First, try users collection
           final patientDoc = await _db.collection('users').doc(actualPatientId.toString()).get();
           if (patientDoc.exists) {
@@ -460,7 +462,7 @@ class MessageBloc extends Bloc<MessageEvent, MessageState> {
       'participants': [doctorId, event.patientId], // Use UID
       'lastMessage': event.message,
       'timestamp': timestamp,
-      'unreadCount': 0,
+      'unreadCount': FieldValue.increment(1),
     }, SetOptions(merge: true));
 
     await _db.collection('chats').doc(chatId).collection('messages').add({
