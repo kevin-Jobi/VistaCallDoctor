@@ -1,3 +1,6 @@
+
+
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vista_call_doctor/blocs/auth/auth_bloc.dart';
@@ -7,7 +10,6 @@ import 'package:vista_call_doctor/blocs/availability/availability_bloc.dart';
 import 'package:vista_call_doctor/blocs/profile/profile_bloc.dart';
 import 'package:vista_call_doctor/blocs/profile/profile_event.dart';
 import 'package:vista_call_doctor/views/availability/availability_screen.dart';
-import 'package:vista_call_doctor/views/availability_screen.dart';
 
 class ProfileFillingViewModel {
   final ProfileBloc profileBloc;
@@ -76,5 +78,15 @@ class ProfileFillingViewModel {
         ),
       ),
     );
+  }
+
+  Future<void> registerUser(String email, String password, BuildContext context) async {
+    if (email.isEmpty || password.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Email and password are required')),
+      );
+      return;
+    }
+    authBloc.add(RegisterUserEvent(email: email, password: password));
   }
 }

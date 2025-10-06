@@ -1,14 +1,16 @@
+
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vista_call_doctor/blocs/availability/availability_bloc.dart';
 import 'package:vista_call_doctor/blocs/availability/availability_event.dart';
+import 'package:vista_call_doctor/blocs/certificate/certificate_bloc.dart';
 import 'package:vista_call_doctor/blocs/certificate/certificate_event.dart';
 import 'package:vista_call_doctor/blocs/onboarding/onboarding_bloc.dart';
 import 'package:vista_call_doctor/blocs/onboarding/onboarding_event.dart';
 import 'package:vista_call_doctor/blocs/profile/profile_bloc.dart';
 import 'package:vista_call_doctor/services/dialog_service.dart';
 import 'package:vista_call_doctor/views/welcome/welcome_screen.dart';
-import '../blocs/certificate/certificate_bloc.dart';
 
 class CertificateViewModel {
   final CertificateBloc certificateBloc;
@@ -40,7 +42,7 @@ class CertificateViewModel {
         age: profileState.profile.age,
         dateOfBirth: profileState.profile.dateOfBirth,
         email: profileState.profile.email,
-        password: profileState.profile.password,
+        password: profileState.profile.password, // Optional, not used for registration
         gender: profileState.profile.gender,
         department: profileState.profile.department,
         hospitalName: profileState.profile.hospitalName,
@@ -49,12 +51,11 @@ class CertificateViewModel {
         yearsOfExperience: availabilityState.availability.yearsOfExperience,
         fees: availabilityState.availability.fees,
         certificatePath: state.certificatePath!,
-        availableTimeSlots: availabilityState.availability.availableTimeSlots
+        availableTimeSlots: availabilityState.availability.availableTimeSlots,
       ),
     );
-        BlocProvider.of<AvailabilityBloc>(context).add(const ResetAvailability());
+    BlocProvider.of<AvailabilityBloc>(context).add(const ResetAvailability());
 
-    // await _showSubmissionDialog(context);
     await DialogService.showSubmissionDialog(
       context,
       onSuccess: () {
@@ -65,9 +66,7 @@ class CertificateViewModel {
         _navigateToWelcome(context);
       },
       onError: (error) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(error)));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error)));
       },
     );
   }
@@ -92,7 +91,6 @@ class CertificateViewModel {
             const Text('Your account is pending admin approval.'),
             const Text('You will receive an email when approved.'),
             const SizedBox(height: 20),
-            // Text('Reference Email: $email'),
           ],
         ),
         actions: [

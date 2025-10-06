@@ -1,5 +1,7 @@
 
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vista_call_doctor/blocs/appointment/appointment_bloc.dart';
@@ -124,8 +126,10 @@ class AppointmentUI extends StatelessWidget {
         tabAlignment: TabAlignment.fill,
         labelPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4), // Added horizontal padding
         tabs: const [
-          Tab(text: 'Upcoming'),
-          Tab(text: 'Completed'),
+          Padding(child: Tab(text: 'Upcoming'),padding: EdgeInsetsGeometry.only(left: 10,right: 10),)
+          ,
+          Padding(child: Tab(text: 'Completed'),padding: EdgeInsetsGeometry.only(left: 10,right: 10),)
+          // Tab(text: 'Completed'),
         ],
       ),
     );
@@ -151,6 +155,12 @@ class AppointmentUI extends StatelessWidget {
       separatorBuilder: (context, index) => const SizedBox(height: 12),
       itemBuilder: (context, index) {
         final appointment = filteredAppointments[index];
+        final doctorId = FirebaseAuth.instance.currentUser?.uid ?? '';
+        final patientId = appointment.patientId ?? appointment.patientName;
+
+        final chatId = doctorId.compareTo(doctorId) < 0
+            ? '$patientId-$doctorId'
+            : '$doctorId-$patientId';
         return AppointmentCard(
           appointment: appointment,
           onAccept: null,
@@ -165,6 +175,8 @@ class AppointmentUI extends StatelessWidget {
                 builder: (context) => ChatDetailScreen(
                   patientId: appointment.patientName,
                   patientName: appointment.patientName ?? 'Unknown Patient',
+                  chatId: chatId,
+
                 ),
               ),
             );

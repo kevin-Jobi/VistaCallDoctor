@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:vista_call_doctor/blocs/auth/auth_bloc.dart';
+import 'package:vista_call_doctor/blocs/auth/auth_state.dart';
 import 'package:vista_call_doctor/blocs/availability/availability_bloc.dart';
 import 'package:vista_call_doctor/blocs/availability/availability_state.dart';
 import 'package:vista_call_doctor/view_models/availability_view_model.dart';
 import 'package:vista_call_doctor/views/widgets/custom_textfield.dart';
+
 
 class AvailabilityUI extends StatelessWidget {
   final GlobalKey<FormState> formKey;
@@ -21,34 +24,31 @@ class AvailabilityUI extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider.value(
-      value: viewModel.availabilityBloc,
-      child: Scaffold(
-        backgroundColor: const Color(0xFF4F91AF),
-        body: SafeArea(
-          child: Column(
-            children: [
-              _buildModernAppBar(context),
-              Expanded(
-                child: Container(
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(32),
-                      topRight: Radius.circular(32),
-                    ),
-                  ),
-                  child: ClipRRect(
-                    borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(32),
-                      topRight: Radius.circular(32),
-                    ),
-                    child: Form(key: formKey, child: _buildContent(context)),
+    return Scaffold(
+      backgroundColor: const Color(0xFF4F91AF),
+      body: SafeArea(
+        child: Column(
+          children: [
+            _buildModernAppBar(context),
+            Expanded(
+              child: Container(
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(32),
+                    topRight: Radius.circular(32),
                   ),
                 ),
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(32),
+                    topRight: Radius.circular(32),
+                  ),
+                  child: Form(key: formKey, child: _buildContent(context)),
+                ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -376,23 +376,24 @@ class AvailabilityUI extends StatelessWidget {
         final hasTimeSlots =
             (state.availability.availableTimeSlots[day] ?? []).isNotEmpty;
 
+        print(
+          'Day: $day, isSelected: $isSelected, availableDays: ${state.availability.availableDays}',
+        );
+
         return AnimatedContainer(
           duration: const Duration(milliseconds: 200),
           child: InkWell(
-            onTap: () {
-              viewModel.toggleDay(day);
-              if (!isSelected) {
-                Future.delayed(const Duration(milliseconds: 100), () {
-                  _showModernTimeSlotsDialog(context, day);
-                });
+            onTap: () async {
+              if (isSelected) {
+                // Already selected → edit slots
+                viewModel.toggleDay(day);
+                // _showModernTimeSlotsDialog(context, day);
+              } else {
+                // Select the day first, then open slots dialog
+                viewModel.toggleDay(day);
+                await Future.delayed(const Duration(milliseconds: 50));
+                _showModernTimeSlotsDialog(context, day);
               }
-              // else {
-              //   // If day is not selected, select it first then show dialog
-              //   viewModel.toggleDay(day);
-              //   Future.delayed(const Duration(milliseconds: 100), () {
-              //     _showModernTimeSlotsDialog(context, day);
-              //   });
-              // }
             },
             borderRadius: BorderRadius.circular(16),
             child: Container(
@@ -569,6 +570,7 @@ class AvailabilityUI extends StatelessWidget {
     showDialog(
       context: context,
       barrierColor: Colors.black.withOpacity(0.5),
+      useRootNavigator: true,
       builder: (BuildContext dialogContext) {
         return Dialog(
           backgroundColor: Colors.transparent,
@@ -588,7 +590,7 @@ class AvailabilityUI extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                // Header
+                // Header (unchanged)
                 Container(
                   padding: const EdgeInsets.all(24),
                   decoration: const BoxDecoration(
@@ -630,7 +632,7 @@ class AvailabilityUI extends StatelessWidget {
                     ],
                   ),
                 ),
-                // Content
+                // Content (unchanged)
                 Flexible(
                   child: StatefulBuilder(
                     builder: (BuildContext innerContext, StateSetter setState) {
@@ -721,11 +723,50 @@ class AvailabilityUI extends StatelessWidget {
                       const SizedBox(width: 12),
                       Expanded(
                         child: ElevatedButton(
+                          // onPressed: () async {
+                          //   try {
+                          //     await viewModel.updateDaySlots(
+                          //       day,
+                          //       selectedSlots,
+                          //       saveToFirestore: true,
+                          //     );
+                          //   } catch (e) {
+                          //   } finally {
+                          //     Navigator.of(
+                          //       dialogContext,
+                          //       rootNavigator: true,
+                          //     ).pop();
+                          //   }
+                          //   // Navigator.of(dialogContext).pop();
+                          // },
                           onPressed: () async {
-                            viewModel.updateDaySlots(day, selectedSlots);
-                            await Future.delayed(const Duration(milliseconds: 100));
-                            Navigator.of(dialogContext).pop();
+                            // Close dialog first (instant feedback)
+                            Navigator.of(
+                              dialogContext,
+                              rootNavigator: true,
+                            ).pop();
+
+                            // Save data asynchronously
+                            try {
+                              await viewModel.updateDaySlots(
+                                day,
+                                selectedSlots,
+                                saveToFirestore: true,
+                              );
+                            } catch (e, st) {
+                              debugPrint('Error updating slots: $e\n$st');
+                              // Optional: show snackbar or toast after save failure
+                              if (context.mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Failed to save time slots'),
+                                    backgroundColor: Colors.red,
+                                  ),
+                                );
+                              }
+                            }
                           },
+
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFF4F91AF),
                             foregroundColor: Colors.white,
@@ -752,9 +793,11 @@ class AvailabilityUI extends StatelessWidget {
   }
 
   void _handleContinuePressed(BuildContext context) {
+    print('Handling continue pressed, isFromProfile: $isFromProfile');
     final isValid = formKey.currentState?.validate() ?? false;
 
     if (!isValid) {
+      print('Form validation failed');
       _showModernSnackBar(
         context,
         'Please fill all fields correctly',
@@ -787,38 +830,37 @@ class AvailabilityUI extends StatelessWidget {
       }
     }
 
-    if (isFromProfile) {
-      viewModel
-          .submitAvailability()
-          .then((_) {
-            Navigator.of(context).pop();
-          })
-          .catchError((e) {
-            _showModernSnackBar(
-              context,
-              'Failed to save availability: $e',
-              Icons.error,
-              Colors.red,
-            );
-          });
-    } else {
-      viewModel
-          .submitAvailability()
-          .then((_) {
-            viewModel.navigateToCertificateScreen(context);
-          })
-          .catchError((e) {
-            _showModernSnackBar(
-              context,
-              'Failed to submit availability: $e',
-              Icons.error,
-              Colors.red,
-            );
-          });
+    final authState = context.read<AuthBloc>().state;
+    if (authState is! Authenticated) {
+      _showModernSnackBar(
+        context,
+        'Authentication required. Please complete registration first.',
+        Icons.error,
+        Colors.red,
+      );
+      return;
     }
 
-    // viewModel.submitAvailability();
-    // viewModel.navigateToCertificateScreen(context);
+    print('Submitting availability for user: ${authState.user.uid}');
+    viewModel
+        .submitAvailability()
+        .then((_) {
+          print('Availability submitted successfully');
+          if (isFromProfile) {
+            Navigator.of(context).pop();
+          } else {
+            viewModel.navigateToCertificateScreen(context);
+          }
+        })
+        .catchError((e) {
+          print('Availability submission failed: $e');
+          _showModernSnackBar(
+            context,
+            'Failed to submit availability: $e',
+            Icons.error,
+            Colors.red,
+          );
+        });
   }
 
   void _showModernSnackBar(
@@ -852,3 +894,4 @@ class AvailabilityUI extends StatelessWidget {
     );
   }
 }
+

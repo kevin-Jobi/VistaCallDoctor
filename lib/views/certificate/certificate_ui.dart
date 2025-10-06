@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:vista_call_doctor/blocs/certificate/certificate_state.dart';
 import 'package:vista_call_doctor/view_models/certificate_view_model.dart';

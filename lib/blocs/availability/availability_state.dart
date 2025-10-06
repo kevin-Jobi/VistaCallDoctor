@@ -53,28 +53,46 @@ class AvailabilityState extends Equatable {
   final bool isSubmitting;
   final bool isSuccess;
   final String? error;
+  final bool isLoading;
 
   const AvailabilityState({
     required this.availability,
     this.isSubmitting = false,
     this.isSuccess = false,
     this.error,
+    this.isLoading = false,
   });
+
+  factory AvailabilityState.initial() {
+    return AvailabilityState(
+      availability: Availability(
+        availableDays: [],
+        yearsOfExperience: '',
+        fees: '',
+        availableTimeSlots: {},
+      ),
+      isLoading: false,
+      error: null,
+      isSubmitting: false,
+    );
+  }
 
   AvailabilityState copyWith({
     Availability? availability,
     bool? isSubmitting,
     bool? isSuccess,
     String? error,
+    bool? isLoading,
   }) {
     return AvailabilityState(
       availability: availability ?? this.availability,
       isSubmitting: isSubmitting ?? this.isSubmitting,
       isSuccess: isSuccess ?? this.isSuccess,
       error: error ?? this.error,
+      isLoading: isLoading ?? false,
     );
   }
 
   @override
-  List<Object?> get props => [availability, isSubmitting, isSuccess, error];
+  List<Object?> get props => [availability, isSubmitting, isSuccess, error, isLoading];
 }

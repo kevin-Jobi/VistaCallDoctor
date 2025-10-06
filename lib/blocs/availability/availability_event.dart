@@ -18,19 +18,19 @@ class ToggleDay extends AvailabilityEvent {
 }
 
 class UpdateYearsOfExperience extends AvailabilityEvent {
-  final String value;
-  const UpdateYearsOfExperience(this.value);
+  final String years;
+  const UpdateYearsOfExperience(this.years);
 
   @override
-  List<Object> get props => [value];
+  List<Object> get props => [years];
 }
 
 class UpdateFees extends AvailabilityEvent {
-  final String value;
-  const UpdateFees(this.value);
+  final String fees;
+  const UpdateFees(this.fees);
 
   @override
-  List<Object> get props => [value];
+  List<Object> get props => [fees];
 }
 
 class UpdateDaySlots extends AvailabilityEvent {
@@ -55,3 +55,13 @@ class ResetAvailability extends AvailabilityEvent {
   @override
   List<Object> get props => [];
 }
+
+class LoadAvailability extends AvailabilityEvent {
+  const LoadAvailability();
+
+  @override
+  List<Object> get props => [];
+}
+
+
+

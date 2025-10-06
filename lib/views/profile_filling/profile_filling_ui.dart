@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vista_call_doctor/blocs/auth/auth_bloc.dart';
 import 'package:vista_call_doctor/blocs/auth/auth_state.dart';
+import 'package:vista_call_doctor/blocs/profile/profile_bloc.dart';
 import 'package:vista_call_doctor/blocs/profile/profile_state.dart';
 import 'package:vista_call_doctor/view_models/profile_filling_view_model.dart';
 import 'package:vista_call_doctor/views/widgets/custom_date_picker.dart';
@@ -497,51 +498,41 @@ class ProfileFillingUI extends StatelessWidget {
     );
   }
 
-  Widget _buildModernContinueButton(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      height: 56,
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [
-            Color.fromARGB(255, 32, 118, 189),
-            Color.fromARGB(255, 45, 130, 200),
-          ],
-        ),
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: const Color.fromARGB(255, 32, 118, 189).withOpacity(0.3),
-            blurRadius: 12,
-            offset: const Offset(0, 6),
-          ),
-        ],
+
+Widget _buildModernContinueButton(BuildContext context) {
+  return Container(
+    width: double.infinity,
+    height: 56,
+    decoration: BoxDecoration(
+      gradient: const LinearGradient(
+        colors: [Color(0xFF4F91AF), Color(0xFF54B2FF)],
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
       ),
-      child: ElevatedButton(
-        onPressed: () {
-          if (formKey.currentState?.validate() ?? false) {
-            viewModel.navigateToAvailabilityScreen(context);
-          }
-        },
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.transparent,
-          shadowColor: Colors.transparent,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-        ),
-        child: const Text(
-          'Continue',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-            letterSpacing: 0.5,
-          ),
-        ),
+      borderRadius: BorderRadius.circular(16),
+    ),
+    child: ElevatedButton(
+      onPressed: () {
+        if (formKey.currentState?.validate() ?? false) {
+          final state = context.read<ProfileBloc>().state;
+          viewModel.registerUser(state.profile.email, state.profile.password, context)
+            .then((_) {
+              // Navigation is handled by BlocListener in ProfileFillingScreen
+            });
+        }
+      },
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.transparent,
+        shadowColor: Colors.transparent,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       ),
-    );
-  }
+      child: const Text(
+        'Continue',
+        style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w600),
+      ),
+    ),
+  );
+}
 
   InputDecoration _modernDropdownDecoration(String hintText) {
     return InputDecoration(

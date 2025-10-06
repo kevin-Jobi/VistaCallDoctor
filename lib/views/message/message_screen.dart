@@ -1,6 +1,3 @@
-
-
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -19,7 +16,6 @@ class MessageScreen extends StatelessWidget {
   //   final messageBloc = BlocProvider.of<MessageBloc>(context);
   //   final viewModel = MessageViewModel(messageBloc);
   //   viewModel.loadMessages();
-
   //   return Scaffold(
   //     backgroundColor: const Color(0xFFF8FAFE),
   //     appBar: _buildAppBar(context),
@@ -27,7 +23,6 @@ class MessageScreen extends StatelessWidget {
   //     bottomNavigationBar: const BottomNavigation(currentIndex: 1),
   //   );
   // }
-
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => MessageBloc()..add(const LoadMessages()),
@@ -100,9 +95,7 @@ class MessageScreen extends StatelessWidget {
         border: Border.all(color: const Color(0xFFE8ECF4), width: 1),
       ),
       child: IconButton(
-        onPressed: () {
-          
-        },
+        onPressed: () {},
         icon: const Icon(
           Icons.search_outlined,
           color: Color(0xFF6B7280),
@@ -130,14 +123,8 @@ class MessageScreen extends StatelessWidget {
         ],
       ),
       child: IconButton(
-        onPressed: () {
-          
-        },
-        icon: const Icon(
-          Icons.edit_outlined,
-          color: Colors.white,
-          size: 22,
-        ),
+        onPressed: () {},
+        icon: const Icon(Icons.edit_outlined, color: Colors.white, size: 22),
       ),
     );
   }
