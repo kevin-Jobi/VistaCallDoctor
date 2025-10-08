@@ -201,6 +201,191 @@
 //   }
 // }
 
+// import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:firebase_auth/firebase_auth.dart';
+// import 'package:vista_call_doctor/blocs/auth/auth_bloc.dart';
+// import 'package:vista_call_doctor/blocs/auth/auth_event.dart';
+
+// class DoctorProfileViewModel {
+//   final AuthBloc authBloc;
+//   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+//   final FirebaseAuth _auth = FirebaseAuth.instance;
+
+//   DoctorProfileViewModel(this.authBloc);
+
+//   Future<Map<String, dynamic>> getDoctorDetails() async {
+//     try {
+//       final user = _auth.currentUser;
+//       if (user == null) {
+//         print('No authenticated user found');
+//         return {
+//           'personal': {
+//             'fullName': 'Unknown',
+//             'email': '',
+//             'department': 'N/A',
+//             'profileImageUrl': null,
+//             'phone': '+91 80866 38223',
+//           },
+//           'availability': {
+//             'availableDays': [],
+//             'availableTimeSlots': {},
+//             'experience': 'N/A',
+//             'fees': 'N/A',
+//           },
+//         };
+//       }
+
+//       final doctorId = user.uid;
+//       print('Fetching data for doctorId: $doctorId');
+//       final docSnapshot = await _firestore
+//           .collection('doctors')
+//           .doc(doctorId)
+//           .get();
+
+//       if (docSnapshot.exists) {
+//         final data = docSnapshot.data() as Map<String, dynamic>;
+//         print('Fetched data: $data');
+//         final personal = data['personal'] as Map<String, dynamic>? ?? {};
+//         final availability =
+//             data['availability'] as Map<String, dynamic>? ?? {};
+
+//         // Safely convert dynamic lists and maps
+//         List<String> convertToStringList(dynamic list) {
+//           return (list as List?)?.map((item) => item.toString()).toList() ?? [];
+//         }
+
+//         Map<String, List<String>> convertToTimeSlotsMap(dynamic map) {
+//           if (map is! Map) return {};
+//           return (map as Map).map((key, value) {
+//             final k = key.toString();
+//             final v =
+//                 (value as List?)?.map((item) => item.toString()).toList() ?? [];
+//             return MapEntry(k, v);
+//           });
+//         }
+
+//         return {
+//           'personal': {
+//             'fullName': personal['fullName']?.toString() ?? 'Unknown',
+//             'email': personal['email']?.toString() ?? '',
+//             'department': personal['department']?.toString() ?? 'N/A',
+//             'profileImageUrl': personal['profileImageUrl']?.toString(),
+//             'phone': personal['phone']?.toString() ?? '+91 80866 38332',
+//           },
+//           'availability': {
+//             'availableDays': convertToStringList(availability['availableDays']),
+//             'availableTimeSlots': convertToTimeSlotsMap(
+//               availability['availableTimeSlots'],
+//             ),
+//             'experience':
+//                 availability['yearsOfExperience']?.toString() ?? 'N/A',
+//             'fees': availability['fees']?.toString() ?? 'N/A',
+//           },
+//         };
+//       }
+//       print('No document found for doctorId: $doctorId');
+//       return {
+//         'personal': {
+//           'fullName': 'Unknown',
+//           'email': '',
+//           'department': 'N/A',
+//           'profileImageUrl': null,
+//           'phone': '+91 80866 38332',
+//         },
+//         'availability': {
+//           'availableDays': [],
+//           'availableTimeSlots': {},
+//           'experience': 'N/A',
+//           'fees': 'N/A',
+//         },
+//       };
+//     } catch (e) {
+//       print('Error fetching doctor details: $e');
+//       return {
+//         'personal': {
+//           'fullName': 'Unknown',
+//           'email': '',
+//           'department': 'N/A',
+//           'profileImageUrl': null,
+//           'phone': '+91 80866 38332',
+//         },
+//         'availability': {
+//           'availableDays': [],
+//           'availableTimeSlots': {},
+//           'experience': 'N/A',
+//           'fees': 'N/A',
+//         },
+//       };
+//     }
+//   }
+
+//   Future<void> updateProfileImage(String newImageUrl) async {
+//     final user = _auth.currentUser;
+//     if (user == null) throw Exception('No authenticated user found');
+
+//     final doctorId = user.uid;
+//     await _firestore.collection('doctors').doc(doctorId).update({
+//       'personal.profileImageUrl': newImageUrl,
+//     });
+//   }
+
+//   Future<void> updateName(String newName) async {
+//     final user = _auth.currentUser;
+//     if (user == null) throw Exception('No authenticated user found');
+
+//     final doctorId = user.uid;
+//     await _firestore.collection('doctors').doc(doctorId).update({
+//       'personal.fullName': newName,
+//     });
+//   }
+
+//   Future<void> updateExperience(String newExperience) async {
+//     final user = _auth.currentUser;
+//     if (user == null) throw Exception('No authenticated user found');
+
+//     final doctorId = user.uid;
+//     await _firestore.collection('doctors').doc(doctorId).update({
+//       'availability.yearsOfExperience': newExperience,
+//     });
+//   }
+
+//   Future<void> updateEmail(String newEmail) async {
+//     final user = _auth.currentUser;
+//     if (user == null) throw Exception('No authenticated user found');
+
+//     final doctorId = user.uid;
+//     await _firestore.collection('doctors').doc(doctorId).update({
+//       'personal.email': newEmail,
+//     });
+//   }
+
+//   Future<void> updateSpecialization(String newSpecialization) async {
+//     final user = _auth.currentUser;
+//     if (user == null) throw Exception('No authenticated user found');
+
+//     final doctorId = user.uid;
+//     await _firestore.collection('doctors').doc(doctorId).update({
+//       'personal.department': newSpecialization,
+//     });
+//   }
+
+//   Future<void> updatePhone(String newPhone) async {
+//     final user = _auth.currentUser;
+//     if (user == null) throw Exception('No authenticated user found');
+
+//     final doctorId = user.uid;
+//     await _firestore.collection('doctors').doc(doctorId).update({
+//       'personal.phone': newPhone,
+//     });
+//   }
+
+//   void logout() {
+//     // authBloc.add(AuthLogoutRequested()); // Trigger logout event in AuthBloc
+//     authBloc.add(SignOut());
+//   }
+// }
+
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:vista_call_doctor/blocs/auth/auth_bloc.dart';
@@ -229,9 +414,11 @@ class DoctorProfileViewModel {
           'availability': {
             'availableDays': [],
             'availableTimeSlots': {},
-            'experience': 'N/A',
+            'yearsOfExperience': 'N/A',
             'fees': 'N/A',
           },
+          'averageRating': 0.0,
+          'numRatings': 0,
         };
       }
 
@@ -246,8 +433,7 @@ class DoctorProfileViewModel {
         final data = docSnapshot.data() as Map<String, dynamic>;
         print('Fetched data: $data');
         final personal = data['personal'] as Map<String, dynamic>? ?? {};
-        final availability =
-            data['availability'] as Map<String, dynamic>? ?? {};
+        final availability = data['availability'] as Map<String, dynamic>? ?? {};
 
         // Safely convert dynamic lists and maps
         List<String> convertToStringList(dynamic list) {
@@ -258,8 +444,7 @@ class DoctorProfileViewModel {
           if (map is! Map) return {};
           return (map as Map).map((key, value) {
             final k = key.toString();
-            final v =
-                (value as List?)?.map((item) => item.toString()).toList() ?? [];
+            final v = (value as List?)?.map((item) => item.toString()).toList() ?? [];
             return MapEntry(k, v);
           });
         }
@@ -274,13 +459,12 @@ class DoctorProfileViewModel {
           },
           'availability': {
             'availableDays': convertToStringList(availability['availableDays']),
-            'availableTimeSlots': convertToTimeSlotsMap(
-              availability['availableTimeSlots'],
-            ),
-            'experience':
-                availability['yearsOfExperience']?.toString() ?? 'N/A',
+            'availableTimeSlots': convertToTimeSlotsMap(availability['availableTimeSlots']),
+            'yearsOfExperience': availability['yearsOfExperience']?.toString() ?? 'N/A',
             'fees': availability['fees']?.toString() ?? 'N/A',
           },
+          'averageRating': data['averageRating']?.toDouble() ?? 0.0,
+          'numRatings': data['numRatings'] ?? 0,
         };
       }
       print('No document found for doctorId: $doctorId');
@@ -295,9 +479,11 @@ class DoctorProfileViewModel {
         'availability': {
           'availableDays': [],
           'availableTimeSlots': {},
-          'experience': 'N/A',
+          'yearsOfExperience': 'N/A',
           'fees': 'N/A',
         },
+        'averageRating': 0.0,
+        'numRatings': 0,
       };
     } catch (e) {
       print('Error fetching doctor details: $e');
@@ -312,9 +498,11 @@ class DoctorProfileViewModel {
         'availability': {
           'availableDays': [],
           'availableTimeSlots': {},
-          'experience': 'N/A',
+          'yearsOfExperience': 'N/A',
           'fees': 'N/A',
         },
+        'averageRating': 0.0,
+        'numRatings': 0,
       };
     }
   }
@@ -380,7 +568,6 @@ class DoctorProfileViewModel {
   }
 
   void logout() {
-    // authBloc.add(AuthLogoutRequested()); // Trigger logout event in AuthBloc
     authBloc.add(SignOut());
   }
 }
