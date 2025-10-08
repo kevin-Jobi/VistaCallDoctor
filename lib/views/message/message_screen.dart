@@ -73,14 +73,14 @@ class MessageScreen extends StatelessWidget {
         ],
       ),
       actions: [
-        Container(
-          margin: const EdgeInsets.only(right: 8),
-          child: _buildSearchButton(context),
-        ),
-        Container(
-          margin: const EdgeInsets.only(right: 16),
-          child: _buildNewMessageButton(context),
-        ),
+        // Container(
+        //   margin: const EdgeInsets.only(right: 8),
+        //   child: _buildSearchButton(context),
+        // ),
+        // Container(
+        //   margin: const EdgeInsets.only(right: 16),
+        //   child: _buildNewMessageButton(context),
+        // ),
       ],
     );
   }

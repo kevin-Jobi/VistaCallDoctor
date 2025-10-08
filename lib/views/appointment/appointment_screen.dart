@@ -99,6 +99,7 @@ import 'package:vista_call_doctor/blocs/appointment/appointment_event.dart';
 import 'package:vista_call_doctor/blocs/appointment/appointment_state.dart';
 import 'package:vista_call_doctor/navigation/bottom_navigation.dart';
 import 'package:vista_call_doctor/view_models/appointment_view_model.dart';
+import 'package:vista_call_doctor/views/profile/doctor_profile_screen.dart';
 import 'appointment_ui.dart';
 
 class AppointmentScreen extends StatelessWidget {
@@ -178,10 +179,10 @@ class AppointmentScreen extends StatelessWidget {
         ],
       ),
       actions: [
-        Container(
-          margin: const EdgeInsets.only(right: 8),
-          child: _buildNotificationButton(context),
-        ),
+        // Container(
+        //   margin: const EdgeInsets.only(right: 8),
+        //   child: _buildNotificationButton(context),
+        // ),
         Container(
           margin: const EdgeInsets.only(right: 16),
           child: _buildProfileAvatar(context),
@@ -214,7 +215,7 @@ class AppointmentScreen extends StatelessWidget {
 
   Widget _buildProfileAvatar(BuildContext context) {
     return GestureDetector(
-      onTap: () => Navigator.pushNamed(context, '/doctor_profile'),
+      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const DoctorProfileScreen())),
       child: Container(
         height: 44,
         width: 44,
